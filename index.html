@@ -143,6 +143,27 @@ header{position:fixed;top:0;width:100%;z-index:999;padding:14px 40px;display:fle
 .cc-stats{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;}
 .cc-pct{color:var(--green);}
 .cc-pct.hi{color:var(--red);}
+/* COUNTRIES LOADING STATE */
+.countries-loading{
+  grid-column:1/-1;
+  padding:40px;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:0.12em;
+  text-align:center;
+}
+.countries-loading span{color:var(--green);}
+.countries-error{
+  grid-column:1/-1;
+  padding:20px 24px;
+  border:1px solid rgba(255,60,60,0.3);
+  background:rgba(255,60,60,0.04);
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--red);
+  letter-spacing:0.08em;
+}
 /* MANIFESTO */
 .manifesto{padding:80px 40px;border-top:1px solid var(--border);position:relative;overflow:hidden;}
 .manifesto::before{content:"";position:absolute;top:0;left:50%;width:1px;height:100%;background:linear-gradient(180deg,var(--border),transparent);}
@@ -368,38 +389,19 @@ footer{border-top:1px solid var(--border);}
   <div class="feat reveal"><div class="feat-num">06 //</div><h3>Open API</h3><p>Integrate Kavrylo data into your own tools. Documented REST endpoint. For developers, media outlets, think tanks, and academics.</p><span class="feat-tag">REST · JSON · WEBHOOKS · DOCS</span></div>
 </div>
 
+<!-- ============================================================
+     COUNTRIES SECTION — Dynamic rendering from Supabase
+     ============================================================ -->
 <section class="countries-section" id="coverage">
   <div class="sdiv reveal" style="padding:0;">// FULL COVERAGE — 29 JURISDICTIONS INDEXED</div>
-  <div class="countries-grid reveal">
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇦🇹</span><span class="cc-name">AUSTRIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:86%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">43.3%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇧🇪</span><span class="cc-name">BELGIUM</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar hi" style="width:88%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct hi">44.2%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇧🇬</span><span class="cc-name">BULGARIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:55%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">27.8%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇭🇷</span><span class="cc-name">CROATIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:62%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">36.0%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇨🇾</span><span class="cc-name">CYPRUS</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:53%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">32.5%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇨🇿</span><span class="cc-name">CZECHIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:65%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">33.8%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇩🇰</span><span class="cc-name">DENMARK</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar hi" style="width:94%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct hi">46.1%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇪🇪</span><span class="cc-name">ESTONIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:67%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">34.0%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇫🇮</span><span class="cc-name">FINLAND</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar hi" style="width:87%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct hi">43.9%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇫🇷</span><span class="cc-name">FRANCE</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar hi" style="width:88%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct hi">45.3%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇩🇪</span><span class="cc-name">GERMANY</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:77%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">39.8%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇬🇷</span><span class="cc-name">GREECE</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:72%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">37.0%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇭🇺</span><span class="cc-name">HUNGARY</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:69%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">35.3%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇮🇪</span><span class="cc-name">IRELAND</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:43%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">22.1%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇮🇹</span><span class="cc-name">ITALY</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:83%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">42.5%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇱🇻</span><span class="cc-name">LATVIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:60%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">30.6%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇱🇹</span><span class="cc-name">LITHUANIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:59%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">30.4%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇱🇺</span><span class="cc-name">LUXEMBOURG</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:74%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">38.1%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇲🇹</span><span class="cc-name">MALTA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:58%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">30.0%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇳🇱</span><span class="cc-name">NETHERLANDS</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:78%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">39.7%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇵🇱</span><span class="cc-name">POLAND</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:66%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">34.0%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇵🇹</span><span class="cc-name">PORTUGAL</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:74%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">37.6%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇷🇴</span><span class="cc-name">ROMANIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:50%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">27.0%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇸🇰</span><span class="cc-name">SLOVAKIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:63%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">33.4%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇸🇮</span><span class="cc-name">SLOVENIA</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:72%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">37.5%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇪🇸</span><span class="cc-name">SPAIN</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:70%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">36.8%</span></div></div>
-    <div class="country-card"><div class="cc-top"><span class="cc-flag">🇸🇪</span><span class="cc-name">SWEDEN</span><span class="cc-badge badge-eu">EU</span></div><div class="cc-bar-wrap"><div class="cc-bar hi" style="width:82%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct hi">42.6%</span></div></div>
-    <div class="country-card" style="background:rgba(255,179,0,0.02)"><div class="cc-top"><span class="cc-flag">🇨🇭</span><span class="cc-name">SWITZERLAND</span><span class="cc-badge badge-non">NON-EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:55%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">28.5%</span></div></div>
-    <div class="country-card" style="background:rgba(255,179,0,0.02)"><div class="cc-top"><span class="cc-flag">🇬🇧</span><span class="cc-name">UNITED KGD</span><span class="cc-badge badge-non">NON-EU</span></div><div class="cc-bar-wrap"><div class="cc-bar" style="width:68%"></div></div><div class="cc-stats"><span>Tax-to-GDP</span><span class="cc-pct">35.3%</span></div></div>
+  <div
+    class="countries-grid reveal"
+    id="countriesContainer"
+  >
+    <!-- Country cards are injected here dynamically by the module script below -->
+    <div class="countries-loading">
+      // CONNECTING TO FISCAL DATABASE<span>...</span>
+    </div>
   </div>
 </section>
 
@@ -638,6 +640,9 @@ footer{border-top:1px solid var(--border);}
   </div>
 </div>
 
+<!-- ============================================================
+     EXISTING JS — unchanged: reveal animations, radar, modal, glitch
+     ============================================================ -->
 <script>
 const obs = new IntersectionObserver((entries) => {
   entries.forEach((e,i) => {
@@ -683,6 +688,109 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => { m.classList.remove('active'); document.body.style.overflow = ''; });
 });
+</script>
+
+<!-- ============================================================
+     SUPABASE MODULE — Dynamic country rendering
+     IMPORTANT: Replace SUPABASE_PROJECT_URL and SUPABASE_ANON_PUBLIC_KEY
+     with your actual Supabase project credentials before deploying.
+     NEVER use the service_role key here — anon/public key only.
+     ============================================================ -->
+<script type="module">
+
+import { createClient }
+  from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+// ── Replace these two values with your real Supabase credentials ──
+const supabaseUrl = 'SUPABASE_PROJECT_URL'
+const supabaseKey = 'SUPABASE_ANON_PUBLIC_KEY'
+// ─────────────────────────────────────────────────────────────────
+
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+// ── Fetch all countries, ordered by tax_to_gdp descending ────────
+async function loadCountries() {
+  const { data, error } = await supabase
+    .from('countries')
+    .select('*')
+    .order('tax_to_gdp', { ascending: false })
+
+  if (error) {
+    console.error('Supabase fetch error:', error)
+    renderError(error.message)
+    return
+  }
+
+  renderCountries(data)
+}
+
+// ── Render country cards into #countriesContainer ────────────────
+function renderCountries(countries) {
+  const container = document.getElementById('countriesContainer')
+  if (!container) return
+
+  if (!countries || countries.length === 0) {
+    container.innerHTML = `
+      <div class="countries-loading">
+        // NO FISCAL DATA RETURNED FROM DATABASE<span>.</span>
+      </div>`
+    return
+  }
+
+  container.innerHTML = countries.map(country => `
+    <div class="country-card"${!country.eu ? ' style="background:rgba(255,179,0,0.02)"' : ''}>
+
+      <div class="cc-top">
+        <span class="cc-flag">${country.flag}</span>
+        <span class="cc-name">${country.name.toUpperCase()}</span>
+        <span class="cc-badge ${country.eu ? 'badge-eu' : 'badge-non'}">
+          ${country.eu ? 'EU' : 'NON-EU'}
+        </span>
+      </div>
+
+      <div class="cc-bar-wrap">
+        <div
+          class="cc-bar${country.highlight ? ' hi' : ''}"
+          style="width:${Math.min(country.tax_to_gdp * 2, 100)}%"
+        ></div>
+      </div>
+
+      <div class="cc-stats">
+        <span>Tax-to-GDP</span>
+        <span class="cc-pct${country.highlight ? ' hi' : ''}">
+          ${country.tax_to_gdp}%
+        </span>
+      </div>
+
+    </div>
+  `).join('')
+
+  // Re-apply staggered bar animation delays after DOM injection
+  container.querySelectorAll('.cc-bar').forEach((b, i) => {
+    b.style.animationDelay = (i * 0.08) + 's'
+  })
+
+  // Re-trigger reveal animation on the container if already visible
+  const grid = container.closest('.reveal')
+  if (grid) {
+    grid.classList.remove('visible')
+    requestAnimationFrame(() => grid.classList.add('visible'))
+  }
+}
+
+// ── Render an error state inside the grid container ──────────────
+function renderError(message) {
+  const container = document.getElementById('countriesContainer')
+  if (!container) return
+  container.innerHTML = `
+    <div class="countries-error">
+      ⚠ DATABASE CONNECTION ERROR — ${message || 'Check Supabase credentials and RLS policy.'}
+    </div>`
+}
+
+// ── Boot ─────────────────────────────────────────────────────────
+loadCountries()
+
 </script>
 </body>
 </html>
