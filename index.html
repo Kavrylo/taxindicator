@@ -690,20 +690,15 @@ document.addEventListener('keydown', e => {
 });
 </script>
 
-<!-- ============================================================
-     SUPABASE MODULE — Dynamic country rendering
-     IMPORTANT: Replace SUPABASE_PROJECT_URL and SUPABASE_ANON_PUBLIC_KEY
-     with your actual Supabase project credentials before deploying.
-     NEVER use the service_role key here — anon/public key only.
-     ============================================================ -->
+
 <script type="module">
 
 import { createClient }
   from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 // ── Replace these two values with your real Supabase credentials ──
-const supabaseUrl = 'SUPABASE_PROJECT_URL'
-const supabaseKey = 'SUPABASE_ANON_PUBLIC_KEY'
+const supabaseUrl = 'https://dmgwsuajboxprznhacjg.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRtZ3dzdWFqYm94cHJ6bmhhY2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMzE0ODYsImV4cCI6MjA5NDYwNzQ4Nn0.lr1L_-oMuyB8s0frtUxVV_3-bkmOMB_zC4yTTgYGQEY'
 // ─────────────────────────────────────────────────────────────────
 
 const supabase = createClient(supabaseUrl, supabaseKey)
