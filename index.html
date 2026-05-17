@@ -1,1896 +1,314 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KAVRYLO — European Fiscal Intelligence</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-/* ═══════════════════════════════════════════════════════════
-   KAVRYLO v3 — OSINT INTELLIGENCE PLATFORM
-   Design: dark military-grade OSINT terminal aesthetic
-   2026 edition
-═══════════════════════════════════════════════════════════ */
-
-*{margin:0;padding:0;box-sizing:border-box;}
-
-:root{
-  --bg:#020509;
-  --bg2:#06090f;
-  --bg3:#0a1018;
-  --panel:#080d14;
-  --border:rgba(0,240,120,0.14);
-  --border2:rgba(0,240,120,0.07);
-  --border3:rgba(0,240,120,0.04);
-  --green:#00f07a;
-  --green2:#00c462;
-  --green-dim:rgba(0,240,120,0.12);
-  --green-glow:rgba(0,240,120,0.25);
-  --red:#ff2d55;
-  --red-dim:rgba(255,45,85,0.08);
-  --amber:#ffab00;
-  --amber-dim:rgba(255,171,0,0.08);
-  --blue:#00aaff;
-  --text:#b8d4b8;
-  --text2:#7a9a7a;
-  --muted:#3d5a3d;
-  --mono:'Share Tech Mono',monospace;
-  --title:'Barlow Condensed',sans-serif;
-  --body:'Rajdhani',sans-serif;
-  --shadow-green:0 0 40px rgba(0,240,120,0.08);
-  --shadow-panel:0 4px 32px rgba(0,0,0,0.6);
-}
-
-html{scroll-behavior:smooth;}
-
-body{
-  font-family:var(--body);
-  background:var(--bg);
-  color:var(--text);
-  overflow-x:hidden;
-  cursor:crosshair;
-}
-
-/* ── Scanline overlay ─────────────────────────────────── */
-body::before{
-  content:"";
-  position:fixed;inset:0;
-  pointer-events:none;z-index:9999;
-  background:repeating-linear-gradient(
-    0deg,
-    transparent,transparent 2px,
-    rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px
-  );
-  animation:scanroll 12s linear infinite;
-}
-@keyframes scanroll{0%{background-position:0 0;}100%{background-position:0 100vh;}}
-
-/* ── Grid overlay ─────────────────────────────────────── */
-.grid-overlay{
-  position:fixed;inset:0;pointer-events:none;z-index:1;
-  background-image:
-    linear-gradient(rgba(0,240,120,0.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,240,120,0.025) 1px,transparent 1px);
-  background-size:80px 80px;
-}
-
-/* ── Corner brackets ─────────────────────────────────── */
-.corner{position:fixed;width:48px;height:48px;pointer-events:none;z-index:9998;}
-.corner-tl{top:14px;left:14px;border-top:2px solid var(--green);border-left:2px solid var(--green);}
-.corner-tr{top:14px;right:14px;border-top:2px solid var(--green);border-right:2px solid var(--green);}
-.corner-bl{bottom:14px;left:14px;border-bottom:2px solid var(--green);border-left:2px solid var(--green);}
-.corner-br{bottom:14px;right:14px;border-bottom:2px solid var(--green);border-right:2px solid var(--green);}
-.corner::before,.corner::after{
-  content:"";position:absolute;
-  background:var(--green);
-}
-.corner-tl::before{top:6px;left:-2px;width:2px;height:4px;}
-.corner-tl::after{top:-2px;left:6px;height:2px;width:4px;}
-.corner-tr::before{top:6px;right:-2px;width:2px;height:4px;}
-.corner-tr::after{top:-2px;right:6px;height:2px;width:4px;}
-.corner-bl::before{bottom:6px;left:-2px;width:2px;height:4px;}
-.corner-bl::after{bottom:-2px;left:6px;height:2px;width:4px;}
-.corner-br::before{bottom:6px;right:-2px;width:2px;height:4px;}
-.corner-br::after{bottom:-2px;right:6px;height:2px;width:4px;}
-
-/* ═══════════════════════════════════════════════════════
-   DONATION BANNER (top, dismissible)
-═══════════════════════════════════════════════════════ */
-#donationBanner{
-  position:fixed;top:0;left:0;right:0;z-index:10001;
-  background:linear-gradient(90deg,rgba(2,5,9,0.98),rgba(8,13,20,0.98));
-  border-bottom:1px solid rgba(0,240,120,0.3);
-  padding:0;
-  transform:translateY(0);
-  transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
-}
-#donationBanner.hidden{transform:translateY(-100%);}
-.banner-inner{
-  max-width:1400px;margin:0 auto;
-  padding:10px 20px 10px 40px;
-  display:flex;align-items:center;gap:20px;
-  flex-wrap:wrap;
-}
-.banner-icon{
-  font-size:18px;flex-shrink:0;
-  filter:drop-shadow(0 0 6px var(--green));
-}
-.banner-text{
-  font-family:var(--mono);font-size:11px;
-  color:var(--text2);letter-spacing:0.06em;
-  flex:1;line-height:1.7;
-}
-.banner-text strong{color:var(--green);}
-.banner-cta{
-  flex-shrink:0;
-  font-family:var(--mono);font-size:11px;font-weight:700;
-  letter-spacing:0.14em;text-transform:uppercase;
-  padding:8px 18px;
-  background:var(--green);color:#020509;
-  text-decoration:none;
-  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
-  transition:all 0.2s;
-  white-space:nowrap;
-}
-.banner-cta:hover{
-  background:transparent;color:var(--green);
-  box-shadow:inset 0 0 0 1px var(--green);
-  clip-path:none;
-}
-.banner-close{
-  flex-shrink:0;
-  width:28px;height:28px;
-  background:none;border:1px solid var(--border);
-  color:var(--muted);
-  font-family:var(--mono);font-size:14px;
-  cursor:crosshair;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.2s;
-  margin-left:4px;
-}
-.banner-close:hover{border-color:var(--green);color:var(--green);}
-
-/* ═══════════════════════════════════════════════════════
-   HEADER
-═══════════════════════════════════════════════════════ */
-header{
-  position:fixed;top:38px;width:100%;z-index:999;
-  padding:0 40px;
-  height:58px;
-  display:flex;align-items:center;justify-content:space-between;
-  background:rgba(2,5,9,0.92);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(20px);
-  transition:top 0.4s cubic-bezier(0.4,0,0.2,1);
-}
-header.banner-gone{top:0;}
-
-.logo{
-  font-family:var(--title);font-size:24px;font-weight:800;
-  letter-spacing:0.22em;text-transform:uppercase;
-  color:white;
-  cursor:pointer;
-  text-decoration:none;
-  display:flex;align-items:center;gap:0;
-  transition:all 0.2s;
-  position:relative;
-}
-.logo:hover{text-shadow:0 0 20px rgba(0,240,120,0.5);}
-.logo em{color:var(--green);font-style:normal;}
-.logo-ver{
-  font-family:var(--mono);font-size:9px;
-  color:var(--muted);letter-spacing:0.08em;
-  margin-left:12px;margin-top:2px;
-  align-self:flex-end;padding-bottom:2px;
-}
-
-.header-center{
-  display:flex;align-items:center;gap:6px;
-}
-.nav-link{
-  font-family:var(--mono);font-size:10px;
-  color:var(--muted);letter-spacing:0.1em;
-  text-decoration:none;padding:6px 14px;
-  border:1px solid transparent;
-  transition:all 0.2s;text-transform:uppercase;
-}
-.nav-link:hover{color:var(--green);border-color:var(--border);}
-.nav-link.active{color:var(--green);border-color:var(--border);}
-
-.header-right{
-  display:flex;align-items:center;gap:20px;
-  font-family:var(--mono);font-size:10px;color:var(--muted);
-}
-.status-pill{
-  display:flex;align-items:center;gap:7px;
-  padding:5px 12px;
-  border:1px solid rgba(0,240,120,0.2);
-  background:rgba(0,240,120,0.04);
-  color:var(--green);font-size:10px;letter-spacing:0.1em;
-}
-.dot{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--green);box-shadow:0 0 8px var(--green);
-  animation:blink 1.4s steps(1) infinite;
-}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.threat-badge{
-  padding:5px 10px;
-  border:1px solid rgba(255,171,0,0.4);
-  background:rgba(255,171,0,0.06);
-  color:var(--amber);font-size:10px;
-  letter-spacing:0.1em;
-  display:flex;align-items:center;gap:6px;
-}
-.threat-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--amber);
-  animation:blink 0.8s steps(1) infinite;
-}
-.header-donate{
-  font-family:var(--mono);font-size:10px;font-weight:700;
-  letter-spacing:0.12em;text-transform:uppercase;
-  padding:6px 14px;
-  background:transparent;color:var(--green);
-  border:1px solid var(--green);
-  text-decoration:none;
-  cursor:crosshair;
-  transition:all 0.2s;
-}
-.header-donate:hover{background:var(--green-dim);}
-
-/* ═══════════════════════════════════════════════════════
-   TICKER
-═══════════════════════════════════════════════════════ */
-.ticker-wrap{
-  margin-top:96px;
-  border-top:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  padding:9px 0;overflow:hidden;
-  background:rgba(0,240,120,0.015);
-  position:relative;
-}
-.ticker-wrap::before,.ticker-wrap::after{
-  content:"";position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;
-}
-.ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--bg),transparent);}
-.ticker-wrap::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent);}
-.ticker-label{
-  position:absolute;left:20px;top:50%;transform:translateY(-50%);z-index:3;
-  font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:0.15em;
-  background:var(--bg);padding:0 8px;
-}
-.ticker-inner{
-  display:flex;gap:0;
-  animation:ticker 50s linear infinite;
-  white-space:nowrap;
-}
-@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.tick-item{
-  font-family:var(--mono);font-size:10px;color:var(--text2);
-  letter-spacing:0.08em;padding:0 24px;
-  border-right:1px solid var(--border2);
-  display:flex;align-items:center;gap:8px;
-}
-.tick-item .tick-code{color:var(--muted);font-size:9px;}
-.tick-item .tick-val{color:var(--green);}
-.tick-item .tick-label{color:var(--text2);}
-.tick-item.alert .tick-val{color:var(--red);}
-.tick-item.alert .tick-code{color:rgba(255,45,85,0.5);}
-.tick-sep{color:var(--border);padding:0 4px;}
-
-/* ═══════════════════════════════════════════════════════
-   HERO
-═══════════════════════════════════════════════════════ */
-.hero{
-  min-height:100vh;
-  padding:60px 40px 80px;
-  position:relative;
-  display:flex;flex-direction:column;justify-content:center;
-}
-/* subtle radial glow behind hero */
-.hero::after{
-  content:"";position:absolute;
-  top:30%;left:55%;
-  width:600px;height:600px;
-  background:radial-gradient(circle,rgba(0,240,120,0.04) 0%,transparent 70%);
-  transform:translate(-50%,-50%);
-  pointer-events:none;
-}
-
-.hero-grid{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:64px;align-items:center;
-  position:relative;z-index:2;
-}
-
-.eyebrow{
-  font-family:var(--mono);font-size:10px;color:var(--green);
-  letter-spacing:0.2em;margin-bottom:28px;
-  display:flex;align-items:center;gap:14px;
-}
-.eyebrow-line{width:32px;height:1px;background:var(--green);opacity:0.6;}
-.eyebrow-dot{width:4px;height:4px;border-radius:50%;background:var(--green);animation:blink 1.6s steps(1) infinite;}
-
-.hero-title{
-  font-family:var(--title);
-  font-size:clamp(68px,9.5vw,144px);
-  font-weight:800;line-height:0.86;
-  letter-spacing:-0.03em;text-transform:uppercase;
-  margin-bottom:4px;
-}
-.hero-title .line1{color:rgba(255,255,255,0.88);}
-.hero-title .line2{
-  color:transparent;
-  -webkit-text-stroke:1px var(--green);
-  position:relative;
-}
-.hero-title .line3{
-  color:var(--green);
-  text-shadow:0 0 60px rgba(0,240,120,0.4),0 0 120px rgba(0,240,120,0.15);
-}
-
-/* improved glitch */
-.glitch{position:relative;display:inline-block;}
-.glitch::before,.glitch::after{
-  content:attr(data-text);
-  position:absolute;top:0;left:0;width:100%;
-  pointer-events:none;
-}
-.glitch::before{
-  color:var(--red);
-  animation:glitch-before 5s steps(1) infinite;
-}
-.glitch::after{
-  color:var(--blue);
-  animation:glitch-after 5s steps(1) infinite;
-}
-@keyframes glitch-before{
-  0%,92%{clip-path:polygon(0 0,0 0,0 0,0 0);transform:translate(0);}
-  93%{clip-path:polygon(0 15%,100% 15%,100% 35%,0 35%);transform:translate(-4px,1px);}
-  94%{clip-path:polygon(0 55%,100% 55%,100% 70%,0 70%);transform:translate(4px,-1px);}
-  95%{clip-path:polygon(0 30%,100% 30%,100% 50%,0 50%);transform:translate(-2px);}
-  96%,100%{clip-path:polygon(0 0,0 0,0 0,0 0);transform:translate(0);}
-}
-@keyframes glitch-after{
-  0%,93%{clip-path:polygon(0 0,0 0,0 0,0 0);transform:translate(0);}
-  94%{clip-path:polygon(0 45%,100% 45%,100% 65%,0 65%);transform:translate(3px);}
-  95%{clip-path:polygon(0 10%,100% 10%,100% 30%,0 30%);transform:translate(-3px,2px);}
-  96%,100%{clip-path:polygon(0 0,0 0,0 0,0 0);transform:translate(0);}
-}
-
-.hero-sub{
-  font-family:var(--mono);font-size:12px;color:var(--text2);
-  margin-top:28px;max-width:520px;line-height:2.2;
-  letter-spacing:0.05em;
-}
-.hero-sub .hl{color:var(--green);}
-.hero-sub .hl2{color:var(--amber);}
-
-.cta-group{margin-top:40px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
-
-.btn{
-  font-family:var(--mono);font-size:11px;font-weight:700;
-  letter-spacing:0.16em;text-transform:uppercase;
-  padding:13px 24px;text-decoration:none;border:none;
-  cursor:crosshair;transition:all 0.22s;
-  display:inline-flex;align-items:center;gap:10px;
-}
-.btn-primary{
-  background:var(--green);color:#020509;
-  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
-  box-shadow:0 0 24px rgba(0,240,120,0.2);
-}
-.btn-primary:hover{
-  background:transparent;color:var(--green);
-  box-shadow:0 0 32px rgba(0,240,120,0.15),inset 0 0 0 1px var(--green);
-  clip-path:none;
-}
-.btn-ghost{
-  background:transparent;color:var(--green);
-  border:1px solid var(--border);
-  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
-}
-.btn-ghost:hover{border-color:var(--green);background:var(--green-dim);clip-path:none;}
-.btn-donate{
-  background:transparent;color:var(--amber);
-  border:1px solid rgba(255,171,0,0.3);
-  font-size:10px;
-}
-.btn-donate:hover{background:var(--amber-dim);border-color:var(--amber);}
-
-/* ── Terminal ────────────────────────────────────────── */
-.terminal{
-  background:var(--panel);
-  border:1px solid var(--border);
-  position:relative;overflow:hidden;
-  box-shadow:var(--shadow-panel),var(--shadow-green);
-}
-.terminal::before{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(160deg,rgba(0,240,120,0.03),transparent 40%);
-  pointer-events:none;
-}
-.terminal-header{
-  padding:10px 16px;
-  border-bottom:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:space-between;
-  font-family:var(--mono);font-size:9px;color:var(--muted);
-  background:rgba(0,0,0,0.3);
-}
-.terminal-dots{display:flex;gap:5px;}
-.terminal-dots span{width:9px;height:9px;border-radius:50%;}
-.terminal-dots span:nth-child(1){background:#ff5f57;}
-.terminal-dots span:nth-child(2){background:#febc2e;}
-.terminal-dots span:nth-child(3){background:#28c840;}
-.terminal-cmd{color:var(--text2);font-size:9px;letter-spacing:0.06em;}
-.terminal-body{padding:18px 20px;font-family:var(--mono);font-size:11px;line-height:2.0;}
-.t-prompt{color:var(--muted);}
-.t-cmd{color:var(--green);}
-.t-key{color:var(--amber);}
-.t-val{color:rgba(255,255,255,0.8);}
-.t-cmt{color:var(--muted);font-size:10px;}
-.t-red{color:var(--red);}
-.t-blue{color:var(--blue);}
-.t-cursor{
-  display:inline-block;width:7px;height:13px;
-  background:var(--green);
-  animation:cursor-blink 1s steps(1) infinite;
-  vertical-align:middle;margin-left:2px;
-}
-@keyframes cursor-blink{0%,100%{opacity:1;}50%{opacity:0;}}
-
-/* ── Ranking panel ───────────────────────────────────── */
-.rank-panel{
-  margin-top:10px;border:1px solid var(--border);
-  background:var(--panel);padding:18px 20px;
-  box-shadow:var(--shadow-panel);
-}
-.rank-header{
-  font-family:var(--mono);font-size:9px;color:var(--muted);
-  margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;
-  padding-bottom:10px;border-bottom:1px solid var(--border2);
-}
-.rank-header span:last-child{color:var(--green);}
-.r-row{
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--mono);font-size:10px;
-  padding:6px 0;border-bottom:1px solid var(--border3);
-}
-.r-row:last-child{border-bottom:none;}
-.r-num{width:20px;color:var(--muted);font-size:9px;text-align:center;}
-.r-flag{width:20px;text-align:center;font-size:13px;}
-.r-name{width:90px;color:rgba(255,255,255,0.65);font-size:10px;letter-spacing:0.04em;}
-.r-bar-wrap{flex:1;height:3px;background:rgba(255,255,255,0.04);position:relative;}
-.r-bar{
-  height:3px;background:var(--green);
-  animation:bar-grow 1.5s ease forwards;
-  transform-origin:left;
-  position:relative;
-}
-.r-bar::after{
-  content:"";position:absolute;right:-1px;top:-2px;
-  width:2px;height:7px;background:var(--green);
-  box-shadow:0 0 6px var(--green);
-}
-@keyframes bar-grow{from{width:0!important;}to{}}
-.r-pct{width:42px;text-align:right;color:var(--green);font-size:10px;}
-.r-row.hi .r-bar{background:var(--red);}
-.r-row.hi .r-bar::after{background:var(--red);box-shadow:0 0 6px var(--red);}
-.r-row.hi .r-pct{color:var(--red);}
-.r-row.hi .r-name{color:rgba(255,45,85,0.8);}
-
-/* ═══════════════════════════════════════════════════════
-   STATS STRIP
-═══════════════════════════════════════════════════════ */
-.stats-strip{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:1px;background:var(--border);
-  border-top:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  margin-top:0;
-}
-.stat-block{
-  background:var(--bg2);padding:32px 28px;
-  position:relative;overflow:hidden;
-  transition:background 0.3s;
-}
-.stat-block:hover{background:var(--bg3);}
-.stat-block::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--green),transparent);
-  animation:sweep 4s ease-in-out infinite;
-}
-@keyframes sweep{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
-.stat-block:nth-child(2)::before{animation-delay:1s;}
-.stat-block:nth-child(3)::before{animation-delay:2s;}
-.stat-block:nth-child(4)::before{animation-delay:3s;}
-.stat-num{
-  font-family:var(--title);font-size:62px;font-weight:800;
-  line-height:1;color:white;letter-spacing:-0.04em;
-}
-.stat-num em{font-style:normal;font-size:28px;color:var(--green);}
-.stat-lbl{
-  font-family:var(--mono);font-size:9px;color:var(--muted);
-  letter-spacing:0.15em;text-transform:uppercase;margin-top:10px;
-}
-.stat-sub{
-  font-family:var(--mono);font-size:9px;color:rgba(0,240,120,0.4);
-  letter-spacing:0.1em;margin-top:4px;
-}
-
-/* ═══════════════════════════════════════════════════════
-   SECTION DIVIDERS
-═══════════════════════════════════════════════════════ */
-.sdiv{
-  display:flex;align-items:center;gap:16px;
-  padding:64px 40px 0;
-  font-family:var(--mono);font-size:9px;
-  color:var(--muted);letter-spacing:0.2em;
-  text-transform:uppercase;
-}
-.sdiv::before{content:"◈";color:var(--green);font-size:10px;}
-.sdiv::after{content:"";flex:1;height:1px;background:var(--border);}
-
-/* ═══════════════════════════════════════════════════════
-   ALERT BOX
-═══════════════════════════════════════════════════════ */
-.alert-box{
-  margin:28px 40px 0;padding:18px 22px;
-  border:1px solid rgba(255,45,85,0.25);
-  background:var(--red-dim);
-  display:flex;align-items:flex-start;gap:16px;
-  position:relative;overflow:hidden;
-}
-.alert-box::before{
-  content:"";position:absolute;inset:0 auto 0 0;
-  width:3px;background:var(--red);
-  box-shadow:0 0 12px var(--red);
-}
-.alert-box::after{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(255,45,85,0.04),transparent 60%);
-  pointer-events:none;
-}
-.alert-icon{
-  font-family:var(--mono);font-size:16px;
-  color:var(--red);flex-shrink:0;margin-top:1px;
-  animation:blink 1s steps(1) infinite;
-}
-.alert-content{
-  font-family:var(--mono);font-size:10px;
-  line-height:2.0;color:rgba(200,200,200,0.55);
-}
-.alert-content strong{color:var(--red);letter-spacing:0.1em;}
-
-/* ═══════════════════════════════════════════════════════
-   FEATURES GRID
-═══════════════════════════════════════════════════════ */
-.features{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:1px;background:var(--border2);
-  margin-top:28px;
-}
-.feat{
-  background:var(--bg);padding:36px 30px;
-  border:1px solid transparent;
-  transition:all 0.3s;
-  position:relative;overflow:hidden;
-  cursor:default;
-}
-.feat::before{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,240,120,0.05),transparent);
-  opacity:0;transition:0.3s;
-}
-.feat:hover{border-color:var(--border);background:var(--bg2);}
-.feat:hover::before{opacity:1;}
-.feat-num{
-  font-family:var(--mono);font-size:9px;
-  color:var(--muted);margin-bottom:18px;
-  letter-spacing:0.15em;
-}
-.feat h3{
-  font-family:var(--title);font-size:22px;font-weight:700;
-  color:white;margin-bottom:10px;
-  letter-spacing:-0.01em;text-transform:uppercase;
-}
-.feat p{
-  font-family:var(--body);font-size:14px;
-  color:var(--text2);line-height:1.75;
-}
-.feat-tags{margin-top:18px;display:flex;flex-wrap:wrap;gap:6px;}
-.feat-tag{
-  font-family:var(--mono);font-size:9px;
-  padding:3px 8px;
-  border:1px solid var(--border2);
-  color:rgba(0,240,120,0.5);letter-spacing:0.1em;
-}
-
-/* ═══════════════════════════════════════════════════════
-   COUNTRIES SECTION
-═══════════════════════════════════════════════════════ */
-.countries-section{padding:64px 40px;}
-
-/* search/filter bar */
-.countries-toolbar{
-  display:flex;align-items:center;gap:12px;
-  margin-top:24px;margin-bottom:16px;
-  flex-wrap:wrap;
-}
-.search-wrap{
-  flex:1;min-width:200px;
-  position:relative;
-}
-.search-wrap::before{
-  content:"⌕";
-  position:absolute;left:12px;top:50%;transform:translateY(-50%);
-  font-size:14px;color:var(--muted);pointer-events:none;
-}
-#countrySearch{
-  width:100%;
-  background:var(--panel);
-  border:1px solid var(--border);
-  padding:9px 12px 9px 32px;
-  font-family:var(--mono);font-size:11px;
-  color:var(--text);outline:none;
-  letter-spacing:0.06em;
-  transition:0.2s;
-}
-#countrySearch::placeholder{color:var(--muted);}
-#countrySearch:focus{border-color:var(--green);background:rgba(0,240,120,0.03);}
-
-.filter-btn{
-  font-family:var(--mono);font-size:9px;letter-spacing:0.12em;
-  padding:9px 14px;
-  background:transparent;color:var(--muted);
-  border:1px solid var(--border2);
-  cursor:crosshair;transition:all 0.2s;text-transform:uppercase;
-}
-.filter-btn:hover,.filter-btn.active{
-  color:var(--green);border-color:var(--border);
-  background:var(--green-dim);
-}
-.countries-count{
-  font-family:var(--mono);font-size:9px;
-  color:var(--muted);letter-spacing:0.1em;
-  margin-left:auto;
-}
-.countries-count span{color:var(--green);}
-
-.countries-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:1px;background:var(--border2);
-}
-.country-card{
-  background:var(--bg);padding:18px 20px;
-  font-family:var(--mono);font-size:11px;
-  border:1px solid transparent;
-  transition:all 0.2s;cursor:crosshair;
-  position:relative;overflow:hidden;
-}
-.country-card::before{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,240,120,0.03),transparent);
-  opacity:0;transition:0.2s;
-}
-.country-card:hover{background:var(--bg2);border-color:var(--border);}
-.country-card:hover::before{opacity:1;}
-.cc-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.cc-flag{font-size:18px;line-height:1;}
-.cc-name{
-  color:white;font-size:11px;letter-spacing:0.06em;flex:1;
-  font-weight:600;
-}
-.cc-badge{font-size:8px;padding:2px 7px;letter-spacing:0.1em;font-weight:700;}
-.badge-eu{
-  background:rgba(0,240,120,0.08);
-  border:1px solid rgba(0,240,120,0.2);
-  color:var(--green);
-}
-.badge-non{
-  background:rgba(255,171,0,0.08);
-  border:1px solid rgba(255,171,0,0.25);
-  color:var(--amber);
-}
-.cc-bar-wrap{height:3px;background:rgba(255,255,255,0.05);margin-bottom:10px;}
-.cc-bar{
-  height:3px;background:var(--green);
-  animation:bar-grow 1.8s ease forwards;
-}
-.cc-bar.hi{background:var(--red);}
-.cc-stats{
-  display:flex;justify-content:space-between;
-  color:var(--muted);font-size:9px;letter-spacing:0.06em;
-}
-.cc-pct{color:var(--green);font-weight:600;}
-.cc-pct.hi{color:var(--red);}
-
-/* loading / error */
-.countries-loading{
-  grid-column:1/-1;padding:48px;
-  font-family:var(--mono);font-size:11px;
-  color:var(--muted);text-align:center;letter-spacing:0.12em;
-}
-.countries-loading .l-dot{
-  display:inline-block;
-  animation:blink 0.6s steps(1) infinite;
-}
-.countries-loading .l-dot:nth-child(2){animation-delay:0.2s;}
-.countries-loading .l-dot:nth-child(3){animation-delay:0.4s;}
-.countries-error{
-  grid-column:1/-1;padding:20px 24px;
-  border:1px solid rgba(255,45,85,0.3);
-  background:var(--red-dim);
-  font-family:var(--mono);font-size:11px;
-  color:var(--red);letter-spacing:0.08em;
-}
-
-/* ═══════════════════════════════════════════════════════
-   MANIFESTO
-═══════════════════════════════════════════════════════ */
-.manifesto{
-  padding:100px 40px;
-  border-top:1px solid var(--border);
-  position:relative;overflow:hidden;
-}
-.manifesto::before{
-  content:"";position:absolute;
-  top:0;left:50%;width:1px;height:100%;
-  background:linear-gradient(180deg,var(--border),transparent);
-}
-.manifesto::after{
-  content:"";position:absolute;
-  top:50%;left:50%;
-  width:400px;height:400px;
-  background:radial-gradient(circle,rgba(0,240,120,0.03),transparent 70%);
-  transform:translate(-50%,-50%);pointer-events:none;
-}
-.manifesto-inner{max-width:800px;margin:0 auto;text-align:center;}
-.manifesto-label{
-  font-family:var(--mono);font-size:9px;color:var(--muted);
-  letter-spacing:0.25em;margin-bottom:36px;text-transform:uppercase;
-}
-.manifesto-quote{
-  font-family:var(--title);
-  font-size:clamp(32px,5vw,58px);font-weight:700;
-  line-height:1.1;color:white;
-  letter-spacing:-0.02em;margin-bottom:28px;
-}
-.manifesto-quote .hl{color:var(--green);}
-.manifesto-body{
-  font-family:var(--mono);font-size:12px;color:var(--text2);
-  line-height:2.2;letter-spacing:0.04em;
-}
-.manifesto-body .hl{color:var(--green);}
-
-/* ═══════════════════════════════════════════════════════
-   RADAR + MONITORING
-═══════════════════════════════════════════════════════ */
-.monitor-section{
-  padding:0 40px 80px;
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:80px;align-items:center;
-}
-.monitor-label{
-  font-family:var(--mono);font-size:9px;color:var(--muted);
-  letter-spacing:0.22em;margin-bottom:20px;text-transform:uppercase;
-}
-.monitor-title{
-  font-family:var(--title);
-  font-size:clamp(36px,5vw,60px);font-weight:800;
-  color:white;line-height:0.92;
-  letter-spacing:-0.03em;text-transform:uppercase;
-  margin-bottom:20px;
-}
-.monitor-title .hl{color:var(--green);}
-.monitor-desc{
-  font-family:var(--mono);font-size:11px;
-  color:var(--text2);line-height:2.1;
-}
-.monitor-stats{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:1px;background:var(--border);
-  margin-top:28px;
-}
-.mstat{
-  background:var(--bg2);padding:16px 18px;
-}
-.mstat-n{
-  font-family:var(--title);font-size:36px;font-weight:800;
-  color:white;letter-spacing:-0.03em;
-}
-.mstat-n em{font-style:normal;font-size:18px;color:var(--green);}
-.mstat-l{
-  font-family:var(--mono);font-size:9px;
-  color:var(--muted);letter-spacing:0.12em;margin-top:4px;
-}
-
-/* ── Radar ────────────────────────────────────────────── */
-.radar-wrap{display:flex;align-items:center;justify-content:center;height:300px;}
-.radar{
-  width:260px;height:260px;border-radius:50%;
-  border:1px solid rgba(0,240,120,0.18);
-  position:relative;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 60px rgba(0,240,120,0.05),inset 0 0 60px rgba(0,240,120,0.02);
-}
-.radar::before,.radar::after{
-  content:"";position:absolute;border-radius:50%;
-  border:1px solid rgba(0,240,120,0.1);
-}
-.radar::before{width:66%;height:66%;}
-.radar::after{width:33%;height:33%;}
-.radar-inner{
-  position:absolute;width:0%;height:0%;
-  border-radius:50%;border:1px solid rgba(0,240,120,0.06);
-  width:83%;height:83%;
-}
-.radar-cross-h,.radar-cross-v{position:absolute;background:rgba(0,240,120,0.08);}
-.radar-cross-h{width:100%;height:1px;top:50%;}
-.radar-cross-v{height:100%;width:1px;left:50%;}
-.radar-sweep{
-  position:absolute;width:50%;height:50%;
-  top:0;left:50%;transform-origin:bottom left;
-  background:conic-gradient(from 0deg,rgba(0,240,120,0.4),rgba(0,240,120,0.1) 30deg,transparent 70deg);
-  animation:sweep-rotate 3s linear infinite;
-  border-radius:0 100% 0 0;
-}
-@keyframes sweep-rotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-.radar-dot{
-  position:absolute;width:7px;height:7px;border-radius:50%;
-  background:var(--green);box-shadow:0 0 10px var(--green);
-  transition:opacity 0.3s;
-}
-.radar-label{
-  position:absolute;font-family:var(--mono);font-size:8px;
-  color:var(--green);letter-spacing:0.08em;white-space:nowrap;
-  pointer-events:none;
-}
-
-/* ═══════════════════════════════════════════════════════
-   WAITLIST
-═══════════════════════════════════════════════════════ */
-.waitlist-section{
-  padding:80px 40px;border-top:1px solid var(--border);
-  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;
-}
-.wl-left h2{
-  font-family:var(--title);
-  font-size:clamp(44px,6vw,80px);font-weight:800;
-  line-height:0.88;text-transform:uppercase;
-  letter-spacing:-0.04em;color:white;margin-bottom:24px;
-}
-.wl-left h2 span{color:var(--green);}
-.wl-left p{
-  font-family:var(--mono);font-size:11px;
-  color:var(--text2);line-height:2.2;
-}
-.wl-perks{
-  margin-top:24px;display:flex;flex-direction:column;gap:8px;
-}
-.wl-perk{
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--mono);font-size:10px;color:var(--text2);
-}
-.wl-perk::before{
-  content:"✓";color:var(--green);font-size:11px;flex-shrink:0;
-}
-.wl-count{
-  margin-top:24px;padding:14px 18px;
-  border:1px solid var(--border);background:var(--panel);
-  font-family:var(--mono);font-size:11px;
-  display:flex;align-items:center;gap:12px;
-}
-.wl-count-num{
-  font-family:var(--title);font-size:40px;font-weight:800;
-  color:var(--green);letter-spacing:-0.04em;line-height:1;
-}
-.wl-count-label{color:var(--muted);font-size:10px;letter-spacing:0.1em;line-height:1.6;}
-
-/* form */
-.form-terminal{
-  background:var(--panel);border:1px solid var(--border);
-  padding:32px;box-shadow:var(--shadow-panel);
-}
-.t-header{
-  font-family:var(--mono);font-size:9px;color:var(--muted);
-  margin-bottom:24px;display:flex;justify-content:space-between;
-  align-items:center;padding-bottom:16px;
-  border-bottom:1px solid var(--border2);
-}
-.t-header .t-status{color:var(--green);display:flex;align-items:center;gap:6px;}
-
-.field-wrap{margin-bottom:18px;}
-.field-label{
-  font-family:var(--mono);font-size:9px;color:var(--green);
-  letter-spacing:0.14em;margin-bottom:7px;
-  display:flex;align-items:center;gap:6px;text-transform:uppercase;
-}
-.field-label::before{content:"▸";font-size:10px;}
-input[type="text"],input[type="email"],select{
-  width:100%;
-  background:rgba(0,240,120,0.03);
-  border:none;border-bottom:1px solid rgba(0,240,120,0.2);
-  padding:10px 12px;
-  font-family:var(--mono);font-size:11px;color:white;
-  outline:none;letter-spacing:0.06em;transition:0.2s;
-}
-input[type="text"]::placeholder,input[type="email"]::placeholder{color:var(--muted);}
-input:focus,select:focus{
-  background:rgba(0,240,120,0.06);
-  border-bottom-color:var(--green);
-  box-shadow:0 2px 0 rgba(0,240,120,0.3);
-}
-select option{background:#06090f;color:white;}
-
-.submit-btn{
-  width:100%;margin-top:6px;padding:15px;
-  background:var(--green);color:#020509;
-  font-family:var(--mono);font-size:11px;font-weight:700;
-  letter-spacing:0.18em;text-transform:uppercase;border:none;
-  cursor:crosshair;
-  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
-  transition:0.22s;display:flex;align-items:center;justify-content:center;gap:10px;
-  box-shadow:0 0 24px rgba(0,240,120,0.2);
-}
-.submit-btn:hover{
-  background:#020509;color:var(--green);
-  box-shadow:inset 0 0 0 1px var(--green),0 0 32px rgba(0,240,120,0.1);
-  clip-path:none;
-}
-.form-note{
-  margin-top:14px;font-family:var(--mono);font-size:9px;
-  color:var(--muted);line-height:2.0;letter-spacing:0.06em;
-}
-
-/* ═══════════════════════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════════════════════ */
-footer{border-top:1px solid var(--border);}
-.footer-main{
-  padding:60px 40px 44px;
-  display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:48px;
-}
-.foot-brand{
-  font-family:var(--title);font-size:30px;font-weight:800;
-  color:white;letter-spacing:0.12em;margin-bottom:12px;
-}
-.foot-brand em{color:var(--green);font-style:normal;}
-.foot-tagline{
-  font-family:var(--mono);font-size:10px;color:var(--text2);
-  line-height:2.0;margin-bottom:20px;letter-spacing:0.04em;
-}
-.foot-status{
-  font-family:var(--mono);font-size:9px;
-  display:flex;align-items:center;gap:10px;
-  flex-wrap:wrap;
-}
-.foot-status-item{
-  display:flex;align-items:center;gap:6px;color:var(--green);
-}
-.foot-status-item .sep{color:var(--muted);}
-.foot-h{
-  font-family:var(--mono);font-size:9px;color:var(--green);
-  letter-spacing:0.18em;text-transform:uppercase;margin-bottom:16px;
-  display:flex;align-items:center;gap:8px;
-}
-.foot-h::before{content:"//";color:var(--muted);}
-.foot-list{font-family:var(--mono);font-size:10px;color:var(--text2);line-height:2.4;}
-.foot-list a{color:var(--text2);text-decoration:none;transition:0.15s;display:inline-flex;align-items:center;gap:6px;}
-.foot-list a::before{content:"→";color:var(--muted);font-size:9px;opacity:0;transition:0.15s;}
-.foot-list a:hover{color:var(--green);}
-.foot-list a:hover::before{opacity:1;color:var(--green);}
-
-.footer-legal{
-  padding:18px 40px;
-  border-top:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:14px;
-  background:rgba(0,240,120,0.01);
-}
-.legal-left{
-  font-family:var(--mono);font-size:9px;
-  color:rgba(61,90,61,0.7);letter-spacing:0.06em;
-}
-.legal-links{display:flex;align-items:center;font-family:var(--mono);font-size:9px;}
-.legal-links a{
-  color:rgba(61,90,61,0.7);text-decoration:none;
-  padding:6px 14px;border-left:1px solid var(--border2);
-  letter-spacing:0.1em;transition:0.15s;
-}
-.legal-links a:first-child{border-left:none;}
-.legal-links a:hover{color:var(--green);}
-
-/* ═══════════════════════════════════════════════════════
-   MODALS (legal, etc.)
-═══════════════════════════════════════════════════════ */
-.modal-overlay{
-  display:none;position:fixed;inset:0;
-  background:rgba(2,5,9,0.97);z-index:10000;
-  align-items:flex-start;justify-content:center;
-  overflow-y:auto;padding:60px 20px;cursor:crosshair;
-}
-.modal-overlay.active{display:flex;}
-.modal-box{
-  background:var(--bg2);border:1px solid var(--border);
-  max-width:760px;width:100%;padding:48px;position:relative;
-  box-shadow:var(--shadow-panel),0 0 80px rgba(0,240,120,0.04);
-}
-.modal-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border2);
-}
-.modal-title{
-  font-family:var(--title);font-size:28px;font-weight:800;
-  color:white;text-transform:uppercase;letter-spacing:0.05em;
-}
-.modal-title span{color:var(--green);}
-.modal-close{
-  font-family:var(--mono);font-size:10px;color:var(--green);
-  background:none;border:1px solid var(--border);
-  padding:8px 16px;cursor:crosshair;transition:0.2s;letter-spacing:0.12em;
-}
-.modal-close:hover{background:var(--green-dim);border-color:var(--green);}
-.modal-sh{
-  font-family:var(--mono);font-size:9px;color:var(--green);
-  letter-spacing:0.18em;margin:24px 0 10px;text-transform:uppercase;
-}
-.modal-sh:first-of-type{margin-top:0;}
-.modal-body{
-  font-family:var(--mono);font-size:11px;
-  color:rgba(184,212,184,0.6);line-height:2.1;
-}
-.modal-body p{margin-bottom:12px;}
-.modal-body strong{color:rgba(184,212,184,0.85);}
-.modal-div{height:1px;background:var(--border2);margin:18px 0;}
-
-/* ═══════════════════════════════════════════════════════
-   REVEAL ANIMATIONS
-═══════════════════════════════════════════════════════ */
-.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease;}
-.reveal.visible{opacity:1;transform:none;}
-
-/* ═══════════════════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════════════════ */
-@media(max-width:1100px){
-  .hero-grid,.waitlist-section,.monitor-section{grid-template-columns:1fr;}
-  .stats-strip{grid-template-columns:repeat(2,1fr);}
-  .features{grid-template-columns:1fr 1fr;}
-  .footer-main{grid-template-columns:1fr 1fr;}
-  .footer-legal{flex-direction:column;align-items:flex-start;}
-}
-@media(max-width:700px){
-  .features,.footer-main{grid-template-columns:1fr;}
-  .stats-strip{grid-template-columns:1fr;}
-  .header-right .threat-badge,.header-right .header-donate{display:none;}
-  .header-center{display:none;}
-  header{padding:0 20px;}
-  .hero{padding:80px 20px 60px;}
-  .sdiv,.alert-box{padding-left:20px;padding-right:20px;}
-  .countries-section,.waitlist-section,.manifesto,.monitor-section{padding-left:20px;padding-right:20px;}
-  .footer-main{padding:36px 20px 24px;}
-  .footer-legal{padding:14px 20px;}
-  .legal-links{flex-wrap:wrap;}
-  .banner-inner{padding:10px 16px;}
-  .monitor-stats{grid-template-columns:1fr 1fr;}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kavrylo • Your Private Erotic AI Companion</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+    
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .heading { font-family: 'Playfair Display', sans-serif; }
+    
+    .hero-bg {
+      background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)), url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-12px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
 </head>
-<body>
+<body class="bg-zinc-950 text-white">
 
-<div class="grid-overlay"></div>
-<div class="corner corner-tl"></div>
-<div class="corner corner-tr"></div>
-<div class="corner corner-bl"></div>
-<div class="corner corner-br"></div>
+  <!-- NAVBAR -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-lg border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-rose-500 to-purple-600 rounded-2xl flex items-center justify-center text-2xl">
+          ♡
+        </div>
+        <span class="text-3xl font-bold tracking-tighter heading">Kavrylo</span>
+      </div>
+      
+      <div class="hidden md:flex items-center gap-10 text-lg">
+        <a href="#features" class="hover:text-rose-400 transition">Features</a>
+        <a href="#characters" class="hover:text-rose-400 transition">Characters</a>
+        <a href="#how" class="hover:text-rose-400 transition">How it works</a>
+      </div>
 
-<!-- ═══════════════════════════════════════════════════
-     DONATION BANNER (dismissible)
-═══════════════════════════════════════════════════ -->
-<div id="donationBanner">
-  <div class="banner-inner">
-    <div class="banner-icon">🔍</div>
-    <div class="banner-text">
-      <strong>Fiscal transparency is a public good.</strong>
-      Kavrylo is 100% independent — no government funding, no advertisers, no agenda.
-      If this data matters to you, help us keep it free and accessible for every European citizen.
+      <div class="flex items-center gap-4">
+        <button onclick="showLogin()" 
+          class="px-6 py-3 border border-white/30 rounded-full hover:border-white transition text-sm font-medium">
+          Log in
+        </button>
+        <button onclick="showSignup()" 
+          class="px-8 py-3 bg-white text-black rounded-full font-semibold hover:bg-rose-500 hover:text-white transition">
+          Start Free
+        </button>
+      </div>
     </div>
-    <a href="https://donate.kavrylo.com" target="_blank" rel="noopener" class="banner-cta">
-      ♦ Support Our Mission
-    </a>
-    <button class="banner-close" id="bannerClose" title="Dismiss">✕</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════
-     HEADER
-═══════════════════════════════════════════════════ -->
-<header id="mainHeader">
-  <a class="logo" href="javascript:location.reload()" title="Reload — KAVRYLO">
-    KAV<em>RYLO</em>
-    <span class="logo-ver">v3.0</span>
-  </a>
-
-  <nav class="header-center">
-    <a href="#coverage" class="nav-link">Coverage</a>
-    <a href="#capabilities" class="nav-link">Platform</a>
-    <a href="#monitoring" class="nav-link">Monitoring</a>
-    <a href="#waitlist" class="nav-link">Early Access</a>
   </nav>
 
-  <div class="header-right">
-    <div class="status-pill">
-      <span class="dot"></span>
-      LIVE · 29 JURISDICTIONS
-    </div>
-    <div class="threat-badge">
-      <span class="threat-dot"></span>
-      FISCAL ALERT: HIGH
-    </div>
-    <a href="https://donate.kavrylo.com" target="_blank" rel="noopener" class="header-donate">
-      ♦ Donate
-    </a>
-  </div>
-</header>
-
-<!-- ═══════════════════════════════════════════════════
-     TICKER
-═══════════════════════════════════════════════════ -->
-<div class="ticker-wrap">
-  <div class="ticker-inner" id="tickerInner">
-    <span class="tick-item"><span class="tick-code">FR</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">45.3%</span></span>
-    <span class="tick-item"><span class="tick-code">DK</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">46.1%</span></span>
-    <span class="tick-item"><span class="tick-code">IE</span><span class="tick-sep">·</span><span class="tick-label">CORPORATE TAX</span><span class="tick-sep">▸</span><span class="tick-val">12.5%</span></span>
-    <span class="tick-item alert"><span class="tick-code">EU27</span><span class="tick-sep">·</span><span class="tick-label">AVG DEBT / GDP</span><span class="tick-sep">▸</span><span class="tick-val">88.7%</span></span>
-    <span class="tick-item"><span class="tick-code">DE</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">39.8%</span></span>
-    <span class="tick-item"><span class="tick-code">CH</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">28.5%</span></span>
-    <span class="tick-item alert"><span class="tick-code">BE</span><span class="tick-sep">·</span><span class="tick-label">TOP MARGINAL RATE</span><span class="tick-sep">▸</span><span class="tick-val">60.4%</span></span>
-    <span class="tick-item"><span class="tick-code">UK</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">35.3%</span></span>
-    <span class="tick-item"><span class="tick-code">BG</span><span class="tick-sep">·</span><span class="tick-label">FLAT TAX</span><span class="tick-sep">▸</span><span class="tick-val">10%</span></span>
-    <span class="tick-item alert"><span class="tick-code">FR</span><span class="tick-sep">·</span><span class="tick-label">FISCAL DEFICIT</span><span class="tick-sep">▸</span><span class="tick-val">-5.5% GDP</span></span>
-    <span class="tick-item"><span class="tick-code">NL</span><span class="tick-sep">·</span><span class="tick-label">CORPORATE TAX</span><span class="tick-sep">▸</span><span class="tick-val">25.8%</span></span>
-    <span class="tick-item"><span class="tick-code">SE</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">42.6%</span></span>
-    <span class="tick-item alert"><span class="tick-code">IT</span><span class="tick-sep">·</span><span class="tick-label">PUBLIC DEBT</span><span class="tick-sep">▸</span><span class="tick-val">137.3% GDP</span></span>
-    <span class="tick-item"><span class="tick-code">PL</span><span class="tick-sep">·</span><span class="tick-label">FLAT TAX OPTION</span><span class="tick-sep">▸</span><span class="tick-val">19%</span></span>
-    <span class="tick-item"><span class="tick-code">ES</span><span class="tick-sep">·</span><span class="tick-label">VAT RATE</span><span class="tick-sep">▸</span><span class="tick-val">21%</span></span>
-    <!-- duplicate for seamless loop -->
-    <span class="tick-item"><span class="tick-code">FR</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">45.3%</span></span>
-    <span class="tick-item"><span class="tick-code">DK</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">46.1%</span></span>
-    <span class="tick-item"><span class="tick-code">IE</span><span class="tick-sep">·</span><span class="tick-label">CORPORATE TAX</span><span class="tick-sep">▸</span><span class="tick-val">12.5%</span></span>
-    <span class="tick-item alert"><span class="tick-code">EU27</span><span class="tick-sep">·</span><span class="tick-label">AVG DEBT / GDP</span><span class="tick-sep">▸</span><span class="tick-val">88.7%</span></span>
-    <span class="tick-item"><span class="tick-code">DE</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">39.8%</span></span>
-    <span class="tick-item"><span class="tick-code">CH</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">28.5%</span></span>
-    <span class="tick-item alert"><span class="tick-code">BE</span><span class="tick-sep">·</span><span class="tick-label">TOP MARGINAL RATE</span><span class="tick-sep">▸</span><span class="tick-val">60.4%</span></span>
-    <span class="tick-item"><span class="tick-code">UK</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">35.3%</span></span>
-    <span class="tick-item"><span class="tick-code">BG</span><span class="tick-sep">·</span><span class="tick-label">FLAT TAX</span><span class="tick-sep">▸</span><span class="tick-val">10%</span></span>
-    <span class="tick-item alert"><span class="tick-code">FR</span><span class="tick-sep">·</span><span class="tick-label">FISCAL DEFICIT</span><span class="tick-sep">▸</span><span class="tick-val">-5.5% GDP</span></span>
-    <span class="tick-item"><span class="tick-code">NL</span><span class="tick-sep">·</span><span class="tick-label">CORPORATE TAX</span><span class="tick-sep">▸</span><span class="tick-val">25.8%</span></span>
-    <span class="tick-item"><span class="tick-code">SE</span><span class="tick-sep">·</span><span class="tick-label">TAX BURDEN</span><span class="tick-sep">▸</span><span class="tick-val">42.6%</span></span>
-    <span class="tick-item alert"><span class="tick-code">IT</span><span class="tick-sep">·</span><span class="tick-label">PUBLIC DEBT</span><span class="tick-sep">▸</span><span class="tick-val">137.3% GDP</span></span>
-    <span class="tick-item"><span class="tick-code">PL</span><span class="tick-sep">·</span><span class="tick-label">FLAT TAX OPTION</span><span class="tick-sep">▸</span><span class="tick-val">19%</span></span>
-    <span class="tick-item"><span class="tick-code">ES</span><span class="tick-sep">·</span><span class="tick-label">VAT RATE</span><span class="tick-sep">▸</span><span class="tick-val">21%</span></span>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════
-     HERO
-═══════════════════════════════════════════════════ -->
-<section class="hero">
-  <div class="hero-grid">
-    <div class="hero-left reveal">
-      <div class="eyebrow">
-        <span class="eyebrow-line"></span>
-        <span class="eyebrow-dot"></span>
-        KAVRYLO FISCAL INTELLIGENCE NETWORK — 2026 EDITION
-      </div>
-      <div class="hero-title">
-        <div class="line1">EUROPEAN</div>
-        <div class="line2"><span class="glitch" data-text="FISCAL">FISCAL</span></div>
-        <div class="line3">INDEX</div>
-      </div>
-      <p class="hero-sub">
-        What institutions won't compile.<br>
-        What governments prefer to <span class="hl">bury in the noise</span>.<br><br>
-        Kavrylo aggregates, normalizes and exposes<br>
-        <span class="hl">real fiscal pressure</span> across <span class="hl2">29 European jurisdictions</span> —<br>
-        EU27 · Switzerland · United Kingdom.<br><br>
-        Raw data. Primary sources. <span class="hl">Zero political filter.</span>
-      </p>
-      <div class="cta-group">
-        <a href="#waitlist" class="btn btn-primary">▶ &nbsp;REQUEST EARLY ACCESS</a>
-        <a href="#coverage" class="btn btn-ghost">// VIEW ALL 29 COUNTRIES</a>
-        <a href="https://donate.kavrylo.com" target="_blank" rel="noopener" class="btn btn-donate">♦ DONATE</a>
-      </div>
-    </div>
-
-    <div class="hero-right">
-      <div class="terminal reveal">
-        <div class="terminal-header">
-          <div class="terminal-dots"><span></span><span></span><span></span></div>
-          <span class="terminal-cmd">kavrylo@osint:~$ fiscal_scan --region EU27+CH+UK --year 2026</span>
+  <!-- HERO -->
+  <section class="hero-bg min-h-screen flex items-center pt-20">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <div class="space-y-10">
+        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2 rounded-full text-sm border border-white/20">
+          <span class="text-green-400">●</span>
+          1,847 people feeling pleasure right now
         </div>
-        <div class="terminal-body">
-          <div><span class="t-cmt">// KAVRYLO INTELLIGENCE ENGINE v3.0 — 2026</span></div>
-          <div><span class="t-cmt">// SOURCE: OECD · EUROSTAT · EUR-LEX · HMRC · FFA-CH</span></div>
-          <br>
-          <div><span class="t-prompt">$ </span><span class="t-cmd">INIT</span> <span class="t-key">year</span>=<span class="t-val">2026</span> <span class="t-key">jurisdictions</span>=<span class="t-val">29</span></div>
-          <div><span class="t-prompt">$ </span><span class="t-cmd">LOAD</span> <span class="t-key">datasets</span>=<span class="t-val">120+</span> <span class="t-key">indicators</span>=<span class="t-val">OK</span></div>
-          <div><span class="t-prompt">$ </span><span class="t-cmd">SYNC</span> <span class="t-key">source</span>=<span class="t-val">SUPABASE</span> <span class="t-key">status</span>=<span class="t-val" style="color:var(--green)">LIVE</span></div>
-          <br>
-          <div><span class="t-red">⚠ ANOMALY DETECTED — HIGH SEVERITY</span></div>
-          <div><span class="t-cmt">&nbsp;&nbsp;DK: highest burden — 46.1% tax-to-GDP [#1]</span></div>
-          <div><span class="t-cmt">&nbsp;&nbsp;FR: 45.3% · BE top marginal rate 60.4%</span></div>
-          <div><span class="t-cmt">&nbsp;&nbsp;CH: lowest of 29 at 28.5% tax-to-GDP</span></div>
-          <div><span class="t-cmt">&nbsp;&nbsp;IT: public debt 137.3% of GDP → CRITICAL</span></div>
-          <br>
-          <div><span class="t-prompt">$ </span><span class="t-cmd">CROSS-REF</span> <span class="t-key">directive</span>=<span class="t-val">Pillar2-OECD</span> <span class="t-key">result</span>=<span class="t-val" style="color:var(--amber)">CONFLICTS FOUND</span></div>
-          <div><span class="t-prompt">$ </span><span class="t-cmd">REPORT</span> <span class="t-key">format</span>=<span class="t-val">JSON+CSV+API</span> <span class="t-key">bias</span>=<span class="t-val">NONE</span></div>
-          <br>
-          <div><span class="t-cmt">// All data. No filter. Updated 2026.</span></div>
-          <div><span class="t-prompt">$ </span><span class="t-cmd">STATUS</span> <span class="t-val" style="color:var(--green)">OPERATIONAL</span> <span class="t-cursor"></span></div>
+
+        <h1 class="text-7xl md:text-8xl font-bold leading-tight heading tracking-tighter">
+          Your most <span class="bg-gradient-to-r from-rose-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">intimate</span> AI companion
+        </h1>
+
+        <p class="text-2xl text-zinc-300 max-w-lg">
+          Deep, uncensored erotic conversations. 
+          Seductive characters who remember everything.
+        </p>
+
+        <div class="flex flex-wrap gap-5">
+          <button onclick="showSignup()" 
+            class="flex items-center gap-3 bg-gradient-to-r from-rose-500 to-purple-600 text-white px-10 py-6 rounded-3xl text-2xl font-semibold hover:scale-105 transition">
+            Start Chatting Now
+            <i class="fas fa-arrow-right"></i>
+          </button>
+          
+          <button onclick="showLogin()" 
+            class="flex items-center gap-3 border-2 border-white/40 px-8 py-6 rounded-3xl text-xl hover:bg-white/10 transition">
+            <i class="fas fa-play"></i> Watch Demo
+          </button>
+        </div>
+
+        <div class="flex items-center gap-8 text-sm">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-check text-green-400"></i>
+            <span>18+ Only</span>
+          </div>
+          <div>No censorship • Private • Instant</div>
         </div>
       </div>
 
-      <div class="rank-panel reveal">
-        <div class="rank-header">
-          <span>// TAX BURDEN INDEX — TOP & BOTTOM · 2026</span>
-          <span>▲ HIGHEST → LOWEST</span>
+      <!-- Right side visual -->
+      <div class="hidden md:block relative">
+        <div class="absolute -inset-10 bg-gradient-to-br from-rose-500/30 to-purple-600/30 blur-3xl rounded-[4rem]"></div>
+        <img src="https://picsum.photos/id/1015/800/1100" 
+             alt="Sensual woman" 
+             class="relative rounded-3xl shadow-2xl border border-white/10">
+        
+        <div class="absolute -bottom-6 -left-6 bg-black/90 backdrop-blur-xl p-6 rounded-2xl border border-white/10 max-w-xs">
+          <p class="italic">"I've been thinking about your hands on my body all day... Tell me what you want to do to me."</p>
+          <div class="text-rose-400 text-sm mt-4">- Lena • Online now</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <div class="bg-zinc-900 py-4 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-6 flex justify-center items-center gap-10 text-sm opacity-75">
+      <div>Powered by uncensored models</div>
+      <div>●</div>
+      <div>End-to-end encrypted</div>
+      <div>●</div>
+      <div>Memory that lasts</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features" class="py-28 bg-zinc-950">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-5xl font-bold text-center heading mb-4">Designed for pure pleasure</h2>
+      <p class="text-center text-xl text-zinc-400 mb-16">Everything you need for an unforgettable experience</p>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-zinc-900 border border-white/10 p-10 rounded-3xl card-hover">
+          <div class="text-5xl mb-6">🔥</div>
+          <h3 class="text-3xl font-semibold mb-4">Zero Limits</h3>
+          <p class="text-zinc-400 text-lg">No censorship. No refusals. No judgment. Say anything — Kavrylo follows.</p>
+        </div>
+        
+        <div class="bg-zinc-900 border border-white/10 p-10 rounded-3xl card-hover">
+          <div class="text-5xl mb-6">🧠</div>
+          <h3 class="text-3xl font-semibold mb-4">Long-term Memory</h3>
+          <p class="text-zinc-400 text-lg">Your companions remember your kinks, preferences, and past encounters.</p>
+        </div>
+        
+        <div class="bg-zinc-900 border border-white/10 p-10 rounded-3xl card-hover">
+          <div class="text-5xl mb-6">🌙</div>
+          <h3 class="text-3xl font-semibold mb-4">Multiple Characters</h3>
+          <p class="text-zinc-400 text-lg">Dominatrix, shy girl, seductive alien, dominant CEO, naughty neighbor… and more.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARACTERS -->
+  <section id="characters" class="py-28 bg-black">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-5xl font-bold text-center heading mb-4">Choose Your Fantasy</h2>
+      <p class="text-center text-zinc-400 text-xl mb-16">Popular characters right now</p>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <!-- Character 1 -->
+        <div class="group relative rounded-3xl overflow-hidden aspect-[4/5] cursor-pointer">
+          <img src="https://picsum.photos/id/64/600/800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent h-2/3"></div>
+          <div class="absolute bottom-6 left-6 right-6">
+            <h4 class="text-2xl font-semibold">Lena • The Seductress</h4>
+            <p class="text-rose-400 text-sm">Very playful • Online</p>
+          </div>
+        </div>
+
+        <!-- Character 2 -->
+        <div class="group relative rounded-3xl overflow-hidden aspect-[4/5] cursor-pointer">
+          <img src="https://picsum.photos/id/1005/600/800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent h-2/3"></div>
+          <div class="absolute bottom-6 left-6 right-6">
+            <h4 class="text-2xl font-semibold">Victoria • Mistress</h4>
+            <p class="text-rose-400 text-sm">Dominant • Very active</p>
+          </div>
+        </div>
+
+        <!-- Character 3 -->
+        <div class="group relative rounded-3xl overflow-hidden aspect-[4/5] cursor-pointer">
+          <img src="https://picsum.photos/id/201/600/800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent h-2/3"></div>
+          <div class="absolute bottom-6 left-6 right-6">
+            <h4 class="text-2xl font-semibold">Mia • Shy Neighbor</h4>
+            <p class="text-rose-400 text-sm">Curious &amp; submissive</p>
+          </div>
+        </div>
+
+        <!-- Character 4 -->
+        <div class="group relative rounded-3xl overflow-hidden aspect-[4/5] cursor-pointer">
+          <img src="https://picsum.photos/id/1011/600/800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent h-2/3"></div>
+          <div class="absolute bottom-6 left-6 right-6">
+            <h4 class="text-2xl font-semibold">Sylvara • Dark Elf</h4>
+            <p class="text-rose-400 text-sm">Fantasy • Very kinky</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="py-28 bg-zinc-950">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <h2 class="text-5xl font-bold heading mb-16">Ready in 30 seconds</h2>
+      
+      <div class="grid md:grid-cols-3 gap-10">
+        <div>
+          <div class="w-20 h-20 mx-auto bg-zinc-900 rounded-2xl flex items-center justify-center text-4xl mb-6">1</div>
+          <h3 class="text-2xl font-semibold mb-3">Create Account</h3>
+          <p class="text-zinc-400">Sign up with email or Google — completely free.</p>
         </div>
         <div>
-          <div class="r-row hi"><span class="r-num">#1</span><span class="r-flag">🇩🇰</span><span class="r-name">DENMARK</span><div class="r-bar-wrap"><div class="r-bar" style="width:96%"></div></div><span class="r-pct">46.1%</span></div>
-          <div class="r-row hi"><span class="r-num">#2</span><span class="r-flag">🇫🇷</span><span class="r-name">FRANCE</span><div class="r-bar-wrap"><div class="r-bar" style="width:89%"></div></div><span class="r-pct">45.3%</span></div>
-          <div class="r-row hi"><span class="r-num">#3</span><span class="r-flag">🇧🇪</span><span class="r-name">BELGIUM</span><div class="r-bar-wrap"><div class="r-bar" style="width:86%"></div></div><span class="r-pct">44.2%</span></div>
-          <div class="r-row"><span class="r-num">#4</span><span class="r-flag">🇸🇪</span><span class="r-name">SWEDEN</span><div class="r-bar-wrap"><div class="r-bar" style="width:82%"></div></div><span class="r-pct">42.6%</span></div>
-          <div class="r-row"><span class="r-num">#7</span><span class="r-flag">🇩🇪</span><span class="r-name">GERMANY</span><div class="r-bar-wrap"><div class="r-bar" style="width:77%"></div></div><span class="r-pct">39.8%</span></div>
-          <div class="r-row"><span class="r-num">#14</span><span class="r-flag">🇬🇧</span><span class="r-name">UNITED KGD</span><div class="r-bar-wrap"><div class="r-bar" style="width:67%"></div></div><span class="r-pct">35.3%</span></div>
-          <div class="r-row" style="opacity:0.55"><span class="r-num">#28</span><span class="r-flag">🇮🇪</span><span class="r-name">IRELAND</span><div class="r-bar-wrap"><div class="r-bar" style="width:42%"></div></div><span class="r-pct">22.1%</span></div>
-          <div class="r-row" style="opacity:0.45"><span class="r-num">#29</span><span class="r-flag">🇨🇭</span><span class="r-name">SWITZERLAND</span><div class="r-bar-wrap"><div class="r-bar" style="width:55%"></div></div><span class="r-pct">28.5%</span></div>
+          <div class="w-20 h-20 mx-auto bg-zinc-900 rounded-2xl flex items-center justify-center text-4xl mb-6">2</div>
+          <h3 class="text-2xl font-semibold mb-3">Choose a Character</h3>
+          <p class="text-zinc-400">Or create your own fantasy companion.</p>
+        </div>
+        <div>
+          <div class="w-20 h-20 mx-auto bg-zinc-900 rounded-2xl flex items-center justify-center text-4xl mb-6">3</div>
+          <h3 class="text-2xl font-semibold mb-3">Dive In</h3>
+          <p class="text-zinc-400">No limits. Pure pleasure.</p>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ═══════════════════════════════════════════════════
-     STATS STRIP
-═══════════════════════════════════════════════════ -->
-<div class="stats-strip reveal">
-  <div class="stat-block">
-    <div class="stat-num">29<em> states</em></div>
-    <div class="stat-lbl">// EU27 + CH + UK</div>
-    <div class="stat-sub">Full jurisdiction coverage</div>
-  </div>
-  <div class="stat-block">
-    <div class="stat-num">120<em>+</em></div>
-    <div class="stat-lbl">// Fiscal indicators</div>
-    <div class="stat-sub">Per country, per year</div>
-  </div>
-  <div class="stat-block">
-    <div class="stat-num">46<em>.1%</em></div>
-    <div class="stat-lbl">// Peak tax burden (DK)</div>
-    <div class="stat-sub">Highest of 29 — 2026</div>
-  </div>
-  <div class="stat-block">
-    <div class="stat-num">0<em> bias</em></div>
-    <div class="stat-lbl">// Raw data only</div>
-    <div class="stat-sub">No editorial interpretation</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════
-     ALERT
-═══════════════════════════════════════════════════ -->
-<div class="sdiv reveal">ANOMALY DETECTED — OECD PILLAR 2 DIRECTIVE · 2026</div>
-<div class="alert-box reveal">
-  <div class="alert-icon">⚠</div>
-  <div class="alert-content">
-    <strong>CRITICAL ALERT — IMPLEMENTATION DIVERGENCE ACROSS 29 JURISDICTIONS</strong><br>
-    The OECD Pillar 2 directive (15% global minimum corporate tax), transposed into EU law and now entering enforcement phase in 2026, is generating undocumented distortions across member states.
-    Kavrylo tracks in real-time the <strong>IMPLEMENTATION GAPS</strong> between all 29 jurisdictions.
-    Several states continue to delay enforcement. Others maintain unpublished carve-out clauses.
-    Switzerland and the UK operate parallel frameworks with diverging timelines.
-    <strong>KAVRYLO MAPS ALL OF IT — UPDATED FOR 2026.</strong>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════
-     PLATFORM CAPABILITIES
-═══════════════════════════════════════════════════ -->
-<div class="sdiv reveal" id="capabilities" style="margin-top:48px;">PLATFORM CAPABILITIES — 2026</div>
-<div class="features reveal" style="margin-top:28px;">
-  <div class="feat">
-    <div class="feat-num">01 //</div>
-    <h3>Fiscal Heatmaps</h3>
-    <p>Visualize real tax pressure by country, tax type, and income bracket. Not the smoothed official figures — the complete, unfiltered picture across all 29 jurisdictions.</p>
-    <div class="feat-tags"><span class="feat-tag">INTERACTIVE</span><span class="feat-tag">SVG</span><span class="feat-tag">LIVE</span></div>
-  </div>
-  <div class="feat">
-    <div class="feat-num">02 //</div>
-    <h3>Raw Data Export</h3>
-    <p>CSV / JSON export of all 120+ indicators. Primary sources linked directly. No political interpretation. You analyze, you conclude.</p>
-    <div class="feat-tags"><span class="feat-tag">EUROSTAT</span><span class="feat-tag">OECD</span><span class="feat-tag">EUR-LEX</span></div>
-  </div>
-  <div class="feat">
-    <div class="feat-num">03 //</div>
-    <h3>Directive Tracker</h3>
-    <p>Real-time monitoring of fiscal directive implementation across all jurisdictions. Who complies. Who delays. Who circumvents. Updated daily.</p>
-    <div class="feat-tags"><span class="feat-tag">REAL-TIME</span><span class="feat-tag">ALERTS</span><span class="feat-tag">DIFF VIEW</span></div>
-  </div>
-  <div class="feat">
-    <div class="feat-num">04 //</div>
-    <h3>Country Comparator</h3>
-    <p>Compare up to 10 jurisdictions across 40+ fiscal criteria simultaneously. Multi-axis. Exportable. Built for founders, investors, researchers, and journalists.</p>
-    <div class="feat-tags"><span class="feat-tag">MULTI-AXIS</span><span class="feat-tag">EXPORT</span><span class="feat-tag">SHARE</span></div>
-  </div>
-  <div class="feat">
-    <div class="feat-num">05 //</div>
-    <h3>Historical Series</h3>
-    <p>32 years of data — from 1994 to 2026. See how fiscal pressure has evolved in every state. The long-term trends no institution bothers to surface.</p>
-    <div class="feat-tags"><span class="feat-tag">1994–2026</span><span class="feat-tag">TIMELINE</span><span class="feat-tag">REGRESSION</span></div>
-  </div>
-  <div class="feat">
-    <div class="feat-num">06 //</div>
-    <h3>Open API</h3>
-    <p>Integrate Kavrylo data into your own tools. Documented REST endpoint, webhook support, and developer sandbox. Free for non-commercial and research use.</p>
-    <div class="feat-tags"><span class="feat-tag">REST</span><span class="feat-tag">JSON</span><span class="feat-tag">WEBHOOKS</span></div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════
-     COUNTRIES — Dynamic from Supabase
-═══════════════════════════════════════════════════ -->
-<section class="countries-section" id="coverage">
-  <div class="sdiv reveal" style="padding:0;">FULL COVERAGE — 29 JURISDICTIONS INDEXED · DATA TO 2026</div>
-
-  <div class="countries-toolbar reveal">
-    <div class="search-wrap">
-      <input type="text" id="countrySearch" placeholder="Search country..."/>
+  <!-- FINAL CTA -->
+  <section class="py-32 bg-gradient-to-b from-transparent via-rose-500/10 to-transparent">
+    <div class="max-w-4xl mx-auto text-center px-6">
+      <h2 class="text-6xl md:text-7xl font-bold heading leading-tight mb-8">
+        Are you ready to explore your deepest desires?
+      </h2>
+      <p class="text-2xl text-zinc-300 mb-12">Join thousands of users already enjoying private, uncensored conversations.</p>
+      
+      <button onclick="showSignup()" 
+        class="text-3xl px-16 py-8 bg-white text-black rounded-3xl font-bold hover:bg-rose-500 hover:text-white transition-all duration-300 shadow-2xl">
+        Create Free Account
+      </button>
+      
+      <p class="text-zinc-500 mt-8">No credit card required • Cancel anytime</p>
     </div>
-    <button class="filter-btn active" data-filter="all">ALL (29)</button>
-    <button class="filter-btn" data-filter="eu">EU ONLY</button>
-    <button class="filter-btn" data-filter="non">NON-EU</button>
-    <button class="filter-btn" data-filter="high">HIGH BURDEN</button>
-    <div class="countries-count">Showing <span id="countShown">—</span> countries</div>
-  </div>
+  </section>
 
-  <div class="countries-grid reveal" id="countriesContainer">
-    <div class="countries-loading">
-      // CONNECTING TO FISCAL DATABASE
-      <span class="l-dot">.</span><span class="l-dot">.</span><span class="l-dot">.</span>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════
-     MANIFESTO
-═══════════════════════════════════════════════════ -->
-<section class="manifesto">
-  <div class="manifesto-inner reveal">
-    <div class="manifesto-label">// KAVRYLO — EDITORIAL POSITION · 2026</div>
-    <div class="manifesto-quote">
-      "Fiscal transparency<br>
-      is not a <span class="hl">privilege</span>.<br>
-      It is a right."
-    </div>
-    <div class="manifesto-body">
-      European fiscal data exists. It is public, fragmented,<br>
-      buried across 47 institutional portals in 24 languages.<br><br>
-      Kavrylo compiles, normalizes and makes it <span class="hl">accessible to everyone</span>.<br>
-      No political agenda. No editorial slant. No advertising. No compromise.<br><br>
-      <span style="color:rgba(0,240,120,0.4);">
-        This platform runs on the support of people who believe informed citizens<br>
-        make better democracies. If that resonates with you —
-      </span>
-      <a href="https://donate.kavrylo.com" target="_blank" rel="noopener"
-        style="color:var(--green);text-decoration:none;letter-spacing:0.08em;border-bottom:1px solid rgba(0,240,120,0.3);">
-        consider supporting us →
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════
-     MONITORING / RADAR
-═══════════════════════════════════════════════════ -->
-<div class="monitor-section reveal" id="monitoring">
-  <div>
-    <div class="monitor-label">// ACTIVE MONITORING — 24/7</div>
-    <div class="monitor-title">Real-time<br><span class="hl">Surveillance</span></div>
-    <p class="monitor-desc">
-      29 jurisdictions. 120+ indicators.<br>
-      Automated sync from official primary sources every 6 hours.<br>
-      Real-time alerts on fiscal anomalies, directive changes,<br>
-      budget revisions, and implementation gaps.
-    </p>
-    <div class="monitor-stats">
-      <div class="mstat">
-        <div class="mstat-n">6<em>h</em></div>
-        <div class="mstat-l">// Data refresh cycle</div>
+  <!-- FOOTER -->
+  <footer class="bg-black py-16 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <div class="flex justify-center items-center gap-3 mb-8">
+        <span class="text-4xl">♡</span>
+        <span class="text-3xl font-bold tracking-tighter heading">Kavrylo</span>
       </div>
-      <div class="mstat">
-        <div class="mstat-n">47<em>+</em></div>
-        <div class="mstat-l">// Official sources monitored</div>
-      </div>
-      <div class="mstat">
-        <div class="mstat-n">32<em>y</em></div>
-        <div class="mstat-l">// Historical depth (1994–2026)</div>
-      </div>
-      <div class="mstat">
-        <div class="mstat-n">0<em>€</em></div>
-        <div class="mstat-l">// Government / advertiser funding</div>
+      <p class="text-zinc-500">© 2026 Kavrylo • 18+ Adults Only</p>
+      <div class="flex justify-center gap-8 mt-8 text-sm text-zinc-500">
+        <a href="#" class="hover:text-white">Privacy</a>
+        <a href="#" class="hover:text-white">Terms</a>
+        <a href="#" class="hover:text-white">Safety</a>
+        <a href="#" class="hover:text-white">Contact</a>
       </div>
     </div>
-  </div>
-  <div class="radar-wrap">
-    <div class="radar">
-      <div class="radar-inner"></div>
-      <div class="radar-cross-h"></div>
-      <div class="radar-cross-v"></div>
-      <div class="radar-sweep"></div>
-      <div class="radar-dot" style="top:28%;left:56%"></div>
-      <div class="radar-dot" style="top:62%;left:34%;background:var(--red);box-shadow:0 0 10px var(--red)"></div>
-      <div class="radar-dot" style="top:44%;left:71%"></div>
-      <div class="radar-dot" style="top:19%;left:46%;background:var(--amber);box-shadow:0 0 10px var(--amber)"></div>
-      <div class="radar-dot" style="top:73%;left:59%"></div>
-      <div class="radar-dot" style="top:38%;left:26%;background:var(--amber);box-shadow:0 0 8px var(--amber)"></div>
-      <span class="radar-label" style="top:22%;left:52%;font-size:7px;">DK #1</span>
-      <span class="radar-label" style="top:64%;left:30%;font-size:7px;color:var(--red);">IT ⚠</span>
-    </div>
-  </div>
-</div>
+  </footer>
 
-<!-- ═══════════════════════════════════════════════════
-     WAITLIST
-═══════════════════════════════════════════════════ -->
-<section class="waitlist-section" id="waitlist">
-  <div class="wl-left reveal">
-    <h2>Join the<br><span>Early</span><br>Access</h2>
-    <p>
-      The platform is in active development.<br>
-      Early registrants receive full free access<br>
-      for 6 months upon official launch — no card required.
-    </p>
-    <div class="wl-perks">
-      <div class="wl-perk">Full access to all 29 jurisdictions & 120+ indicators</div>
-      <div class="wl-perk">Historical data series 1994–2026</div>
-      <div class="wl-perk">API access included during beta</div>
-      <div class="wl-perk">Priority alerts on fiscal anomalies</div>
-      <div class="wl-perk">GDPR compliant — your data stays yours</div>
-    </div>
-    <div class="wl-count">
-      <div class="wl-count-num">1,240</div>
-      <div class="wl-count-label">researchers, analysts,<br>journalists & founders<br>already on the list</div>
+  <!-- MODALS -->
+  <!-- Login Modal -->
+  <div id="loginModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-lg z-[100] flex items-center justify-center">
+    <div class="bg-zinc-900 rounded-3xl p-10 max-w-md w-full mx-4">
+      <h3 class="text-3xl font-bold mb-8 text-center">Welcome back</h3>
+      <input type="email" placeholder="Email" class="w-full bg-zinc-800 border border-white/10 rounded-2xl px-6 py-5 mb-4 focus:outline-none focus:border-rose-500">
+      <input type="password" placeholder="Password" class="w-full bg-zinc-800 border border-white/10 rounded-2xl px-6 py-5 mb-8 focus:outline-none focus:border-rose-500">
+      <button class="w-full py-6 bg-white text-black rounded-2xl font-semibold text-lg hover:bg-rose-500 hover:text-white transition">Log in</button>
+      <p class="text-center text-sm text-zinc-400 mt-6">Don't have an account? <span onclick="switchToSignup()" class="text-rose-400 cursor-pointer hover:underline">Sign up</span></p>
+      <button onclick="hideModals()" class="absolute top-6 right-6 text-zinc-400 hover:text-white">✕</button>
     </div>
   </div>
 
-  <div class="form-terminal reveal">
-    <div class="t-header">
-      <span>// REGISTER_ACCESS — KAVRYLO 2026</span>
-      <span class="t-status"><span class="dot"></span>SECURE · GDPR</span>
-    </div>
-    <div class="field-wrap">
-      <div class="field-label">Full Name / Alias</div>
-      <input type="text" placeholder="Your name or a pseudonym"/>
-    </div>
-    <div class="field-wrap">
-      <div class="field-label">Email Address</div>
-      <input type="email" placeholder="contact@domain.com"/>
-    </div>
-    <div class="field-wrap">
-      <div class="field-label">Your Profile</div>
-      <select>
-        <option value="">Select your profile...</option>
-        <option>Entrepreneur / Founder</option>
-        <option>Investor</option>
-        <option>Analyst / Researcher</option>
-        <option>Journalist / Media</option>
-        <option>Tax Advisor / Accountant</option>
-        <option>Developer</option>
-        <option>Informed Citizen</option>
-        <option>NGO / Think Tank</option>
-        <option>Academic</option>
-      </select>
-    </div>
-    <button class="submit-btn" id="submitBtn">▶ &nbsp;&nbsp;JOIN THE WAITLIST</button>
-    <div class="form-note">
-      // No spam. No data resale. GDPR compliant. You may unsubscribe at any time.<br>
-      // Fiscal data on this platform is informational only — not tax or legal advice.
+  <!-- Signup Modal -->
+  <div id="signupModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-lg z-[100] flex items-center justify-center">
+    <div class="bg-zinc-900 rounded-3xl p-10 max-w-md w-full mx-4">
+      <h3 class="text-3xl font-bold mb-8 text-center">Join Kavrylo</h3>
+      <input type="email" placeholder="Email address" class="w-full bg-zinc-800 border border-white/10 rounded-2xl px-6 py-5 mb-4 focus:outline-none focus:border-rose-500">
+      <input type="password" placeholder="Create password" class="w-full bg-zinc-800 border border-white/10 rounded-2xl px-6 py-5 mb-8 focus:outline-none focus:border-rose-500">
+      <button onclick="alert('Account creation flow would connect to Supabase here')" 
+        class="w-full py-6 bg-gradient-to-r from-rose-500 to-purple-600 rounded-2xl font-semibold text-lg">
+        Create Free Account
+      </button>
+      <p class="text-center text-xs text-zinc-500 mt-6">By signing up, you confirm you are 18+</p>
+      <button onclick="hideModals()" class="absolute top-6 right-6 text-zinc-400 hover:text-white">✕</button>
     </div>
   </div>
-</section>
 
-<!-- ═══════════════════════════════════════════════════
-     FOOTER
-═══════════════════════════════════════════════════ -->
-<footer>
-  <div class="footer-main">
-    <div>
-      <div class="foot-brand">KAV<em>RYLO</em></div>
-      <div class="foot-tagline">
-        European Fiscal Intelligence Platform<br>
-        Data sourced from official public institutions.<br>
-        No political interpretation. No editorial filter.<br>
-        No advertisers. Funded by the public, for the public.
-      </div>
-      <div class="foot-status">
-        <div class="foot-status-item"><span class="dot" style="width:5px;height:5px;"></span>SYSTEM ONLINE</div>
-        <span class="sep">·</span>
-        <div class="foot-status-item" style="color:var(--muted);">API: <span style="color:var(--green);margin-left:4px;">ACTIVE</span></div>
-        <span class="sep">·</span>
-        <div class="foot-status-item" style="color:var(--muted);">DATA: <span style="color:var(--green);margin-left:4px;">2026</span></div>
-      </div>
-    </div>
-    <div>
-      <div class="foot-h">Data Sources</div>
-      <div class="foot-list">
-        OECD Revenue Statistics<br>
-        Eurostat — Taxation Trends<br>
-        European Commission Tax DB<br>
-        IMF Fiscal Monitor<br>
-        EUR-Lex — Fiscal Directives<br>
-        HMRC (United Kingdom)<br>
-        FFA Switzerland (CH)
-      </div>
-    </div>
-    <div>
-      <div class="foot-h">Coverage</div>
-      <div class="foot-list">
-        EU27 Member States<br>
-        Switzerland (CH)<br>
-        United Kingdom (UK)<br>
-        29 jurisdictions total<br>
-        120+ fiscal indicators<br>
-        Historical: 1994–2026<br>
-        Updates: every 6 hours
-      </div>
-    </div>
-    <div>
-      <div class="foot-h">Navigation</div>
-      <div class="foot-list">
-        <a href="#coverage">Country Coverage</a><br>
-        <a href="#capabilities">Platform Features</a><br>
-        <a href="#waitlist">Join Waitlist</a><br>
-        <a href="https://donate.kavrylo.com" target="_blank" rel="noopener">♦ Support / Donate</a><br>
-        <a href="#" onclick="openModal('privacy');return false">Privacy Policy</a><br>
-        <a href="#" onclick="openModal('legal');return false">Legal Notice</a><br>
-        <a href="#" onclick="openModal('terms');return false">Terms of Use</a><br>
-        <a href="#" onclick="openModal('cookies');return false">Cookie Policy</a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-legal">
-    <div class="legal-left">
-      © 2026 KAVRYLO — EUROPEAN FISCAL INDEX. All rights reserved. &nbsp;·&nbsp;
-      Raw data · Zero bias · No advertising · Independent since 2024
-    </div>
-    <div class="legal-links">
-      <a href="#" onclick="openModal('privacy');return false">PRIVACY</a>
-      <a href="#" onclick="openModal('legal');return false">LEGAL</a>
-      <a href="#" onclick="openModal('terms');return false">TERMS</a>
-      <a href="#" onclick="openModal('cookies');return false">COOKIES</a>
-    </div>
-  </div>
-</footer>
-
-<!-- ═══════════════════════════════════════════════════
-     MODALS
-═══════════════════════════════════════════════════ -->
-<div class="modal-overlay" id="modal-privacy">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title">Privacy <span>Policy</span></div>
-      <button class="modal-close" onclick="closeModal('privacy')">[ CLOSE × ]</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-sh">// 1. DATA CONTROLLER</div>
-      <p>Kavrylo ("the Platform") is operated as an independent fiscal intelligence service. All data processing is carried out in accordance with the EU General Data Protection Regulation (GDPR — Regulation 2016/679).</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 2. DATA WE COLLECT</div>
-      <p>When you register on the waitlist, we collect: your name or alias, your email address, and your professional profile category. This data is used solely to manage early access and send platform updates.</p>
-      <p>We do not collect sensitive personal data. We do not deploy behavioral tracking, advertising pixels, or third-party analytics beyond basic anonymous visitor counts.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 3. DATA RETENTION</div>
-      <p>Waitlist data is retained until the platform launches or until you request deletion, whichever comes first. Post-launch, data is retained solely for account management purposes.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 4. YOUR RIGHTS (GDPR)</div>
-      <p>You have the right to access, rectify, delete, restrict processing, and port your personal data. To exercise any of these rights, contact: <strong>privacy@kavrylo.com</strong></p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 5. DATA SHARING</div>
-      <p>We do not sell, rent, or share your personal data with third parties. Data is never used for advertising. Secure third-party email infrastructure may be used for communications, under appropriate data processing agreements.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 6. FISCAL DATA DISCLAIMER</div>
-      <p>All fiscal data on this platform is sourced from public official institutions (OECD, Eurostat, European Commission, HMRC, Swiss FFA). It is informational only and does not constitute tax, legal, or financial advice.</p>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-legal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title">Legal <span>Notice</span></div>
-      <button class="modal-close" onclick="closeModal('legal')">[ CLOSE × ]</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-sh">// 1. PUBLISHER</div>
-      <p>Kavrylo European Fiscal Index is an independent informational platform. It is not affiliated with, endorsed by, or representative of the European Union, any EU institution, the OECD, Eurostat, HMRC, or any other governmental or intergovernmental body.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 2. EDITORIAL INDEPENDENCE</div>
-      <p>Kavrylo operates with full editorial independence. All content reflects publicly available data and does not represent the position of any political party, lobby group, government, or international organization.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 3. DATA ACCURACY</div>
-      <p>All fiscal data is sourced from official publications and updated as frequently as primary sources allow. Despite best efforts, Kavrylo cannot guarantee real-time accuracy. <strong>No information on this platform constitutes tax, legal, or financial advice.</strong></p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 4. INTELLECTUAL PROPERTY</div>
-      <p>The Kavrylo brand, platform design, data aggregation methodology, and all original content are protected by applicable intellectual property law. Raw public data remains the property of its respective official sources and is used under open data licensing.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 5. LIMITATION OF LIABILITY</div>
-      <p>Kavrylo shall not be held liable for any decision made on the basis of data displayed on this platform. Users are responsible for verifying all information against primary official sources before taking any action.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 6. CONTACT</div>
-      <p>For all legal inquiries: <strong>legal@kavrylo.com</strong></p>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-terms">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title">Terms of <span>Use</span></div>
-      <button class="modal-close" onclick="closeModal('terms')">[ CLOSE × ]</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-sh">// 1. ACCEPTANCE</div>
-      <p>By accessing the Kavrylo platform, you agree to these Terms of Use in their entirety. If you do not agree, please discontinue use immediately.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 2. PERMITTED USE</div>
-      <p>The platform is provided for informational, research, and analytical purposes. You may access, consult, and reference data for personal, journalistic, academic, or professional use, provided Kavrylo is credited as the source.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 3. PROHIBITED USE</div>
-      <p>You may not: systematically scrape or extract data without a valid API key; resell or relicense platform data as your own product; use the platform for unlawful purposes; or attempt to interfere with platform infrastructure, security, or availability.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 4. API ACCESS</div>
-      <p>API access is subject to rate limits and API-specific terms communicated upon registration. Abuse of the API will result in immediate and permanent access revocation without notice.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 5. MODIFICATIONS</div>
-      <p>Kavrylo reserves the right to modify these terms at any time. Continued use of the platform after modifications constitutes acceptance of the updated terms.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 6. GOVERNING LAW</div>
-      <p>These terms are governed by applicable European law. Any disputes shall be subject to the exclusive jurisdiction of competent courts. Last updated: 2026.</p>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-cookies">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title">Cookie <span>Policy</span></div>
-      <button class="modal-close" onclick="closeModal('cookies')">[ CLOSE × ]</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-sh">// 1. OUR COOKIE PHILOSOPHY</div>
-      <p>We use cookies sparingly. Kavrylo does not use advertising cookies, social tracking pixels, retargeting systems, or behavioral profiling cookies of any kind.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 2. ESSENTIAL COOKIES</div>
-      <p><strong>Session cookies</strong> are strictly necessary for platform functionality. They expire when you close your browser. No personal data is stored in these cookies.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 3. ANALYTICS (OPTIONAL)</div>
-      <p>We may use privacy-preserving anonymous analytics — no user fingerprinting, no cross-site tracking, no third-party data sharing. These can be refused without any impact on your access to fiscal data.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 4. THIRD-PARTY COOKIES</div>
-      <p>Kavrylo does not load third-party advertising networks or social media trackers. No third-party cookies are set by this platform.</p>
-      <div class="modal-div"></div>
-      <div class="modal-sh">// 5. YOUR CHOICES</div>
-      <p>You may refuse non-essential cookies at any time via your browser settings. For inquiries: <strong>privacy@kavrylo.com</strong></p>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════════════════ -->
-<script>
-/* ── Banner dismiss ─────────────────────────────── */
-const banner = document.getElementById('donationBanner');
-const header = document.getElementById('mainHeader');
-document.getElementById('bannerClose').addEventListener('click', () => {
-  banner.classList.add('hidden');
-  header.classList.add('banner-gone');
-  // adjust ticker top margin
-  document.querySelector('.ticker-wrap').style.marginTop = '58px';
-});
-
-/* ── Reveal on scroll ───────────────────────────── */
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting)
-      setTimeout(() => e.target.classList.add('visible'), i * 60);
-  });
-}, { threshold: 0.06 });
-document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
-
-/* Initial hero reveals */
-setTimeout(() => {
-  document.querySelectorAll('.terminal,.rank-panel,.hero-left').forEach((el, i) => {
-    setTimeout(() => el.classList.add('visible'), 100 + i * 140);
-  });
-}, 80);
-
-/* ── Bar animations ─────────────────────────────── */
-document.querySelectorAll('.r-bar,.cc-bar').forEach((b, i) =>
-  b.style.animationDelay = (i * 0.07) + 's'
-);
-
-/* ── Radar dots blink ───────────────────────────── */
-setInterval(() => {
-  document.querySelectorAll('.radar-dot').forEach(d => {
-    if (Math.random() > 0.6)
-      d.style.opacity = Math.random() > 0.5 ? '1' : '0.12';
-  });
-}, 600);
-
-/* ── Waitlist submit ────────────────────────────── */
-document.getElementById('submitBtn').addEventListener('click', function () {
-  this.innerHTML = '✓ &nbsp;&nbsp;REGISTRATION CONFIRMED — SEE YOU AT LAUNCH';
-  this.style.background = 'var(--green)';
-  this.style.color = '#020509';
-  this.style.clipPath = 'none';
-  this.style.boxShadow = '0 0 40px rgba(0,240,120,0.3)';
-  this.disabled = true;
-});
-
-/* ── Modals ─────────────────────────────────────── */
-function openModal(id) {
-  document.getElementById('modal-' + id).classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-function closeModal(id) {
-  document.getElementById('modal-' + id).classList.remove('active');
-  document.body.style.overflow = '';
-}
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', function (e) {
-    if (e.target === this) {
-      this.classList.remove('active');
-      document.body.style.overflow = '';
+  <script>
+    function showLogin() {
+      document.getElementById('loginModal').classList.remove('hidden');
+      document.getElementById('signupModal').classList.add('hidden');
     }
-  });
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape')
-    document.querySelectorAll('.modal-overlay.active').forEach(m => {
-      m.classList.remove('active');
-      document.body.style.overflow = '';
+    
+    function showSignup() {
+      document.getElementById('signupModal').classList.remove('hidden');
+      document.getElementById('loginModal').classList.add('hidden');
+    }
+    
+    function hideModals() {
+      document.getElementById('loginModal').classList.add('hidden');
+      document.getElementById('signupModal').classList.add('hidden');
+    }
+    
+    function switchToSignup() {
+      hideModals();
+      setTimeout(() => showSignup(), 300);
+    }
+
+    // Close modals on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape") hideModals();
     });
-});
-
-/* ── Active nav link on scroll ──────────────────── */
-const sections = ['coverage','capabilities','monitoring','waitlist'];
-const navLinks = document.querySelectorAll('.nav-link');
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el && window.scrollY >= el.offsetTop - 100) current = id;
-  });
-  navLinks.forEach(a => {
-    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-  });
-}, { passive: true });
-</script>
-
-<!-- ═══════════════════════════════════════════════════
-     SUPABASE MODULE — Dynamic country rendering
-     Replace SUPABASE_PROJECT_URL and SUPABASE_ANON_PUBLIC_KEY
-     with your actual credentials. NEVER use the service_role key.
-═══════════════════════════════════════════════════ -->
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-const supabaseUrl = 'https://dmgwsuajboxprznhacjg.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRtZ3dzdWFqYm94cHJ6bmhhY2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMzE0ODYsImV4cCI6MjA5NDYwNzQ4Nn0.lr1L_-oMuyB8s0frtUxVV_3-bkmOMB_zC4yTTgYGQEY'
-
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-let allCountries = []
-let activeFilter = 'all'
-
-async function loadCountries() {
-  const { data, error } = await supabase
-    .from('countries')
-    .select('*')
-    .order('tax_to_gdp', { ascending: false })
-
-  if (error) {
-    console.error('Supabase fetch error:', error)
-    renderError(error.message)
-    return
-  }
-  allCountries = data || []
-  renderCountries(allCountries)
-  setupFilters()
-}
-
-function renderCountries(list) {
-  const container = document.getElementById('countriesContainer')
-  const countEl = document.getElementById('countShown')
-  if (!container) return
-
-  if (!list || list.length === 0) {
-    container.innerHTML = `<div class="countries-loading">// NO RESULTS MATCH YOUR FILTER</div>`
-    if (countEl) countEl.textContent = '0'
-    return
-  }
-
-  if (countEl) countEl.textContent = list.length
-
-  container.innerHTML = list.map((c, i) => `
-    <div class="country-card" style="animation-delay:${i * 0.04}s"
-      ${!c.eu ? 'style="background:rgba(255,171,0,0.015)"' : ''}>
-      <div class="cc-top">
-        <span class="cc-flag">${c.flag}</span>
-        <span class="cc-name">${c.name.toUpperCase()}</span>
-        <span class="cc-badge ${c.eu ? 'badge-eu' : 'badge-non'}">${c.eu ? 'EU' : 'NON-EU'}</span>
-      </div>
-      <div class="cc-bar-wrap">
-        <div class="cc-bar${c.highlight ? ' hi' : ''}"
-          style="width:${Math.min(c.tax_to_gdp * 2, 100)}%"></div>
-      </div>
-      <div class="cc-stats">
-        <span>Tax-to-GDP</span>
-        <span class="cc-pct${c.highlight ? ' hi' : ''}">${c.tax_to_gdp}%</span>
-      </div>
-    </div>
-  `).join('')
-
-  container.querySelectorAll('.cc-bar').forEach((b, i) => {
-    b.style.animationDelay = (i * 0.06) + 's'
-  })
-}
-
-function setupFilters() {
-  // Filter buttons
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
-      btn.classList.add('active')
-      activeFilter = btn.dataset.filter
-      applyFilters()
-    })
-  })
-
-  // Search input
-  document.getElementById('countrySearch').addEventListener('input', applyFilters)
-}
-
-function applyFilters() {
-  const query = document.getElementById('countrySearch').value.toLowerCase().trim()
-  let filtered = [...allCountries]
-
-  if (activeFilter === 'eu') filtered = filtered.filter(c => c.eu)
-  else if (activeFilter === 'non') filtered = filtered.filter(c => !c.eu)
-  else if (activeFilter === 'high') filtered = filtered.filter(c => c.highlight)
-
-  if (query) filtered = filtered.filter(c =>
-    c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query)
-  )
-
-  renderCountries(filtered)
-}
-
-function renderError(message) {
-  const container = document.getElementById('countriesContainer')
-  if (!container) return
-  container.innerHTML = `
-    <div class="countries-error">
-      ⚠ DATABASE CONNECTION ERROR — ${message || 'Check Supabase credentials and RLS policy.'}
-    </div>`
-}
-
-loadCountries()
-</script>
+  </script>
 </body>
 </html>
